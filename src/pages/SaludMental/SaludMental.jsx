@@ -9,7 +9,11 @@ import Spinner from '@components/ui/Spinner/Spinner'
 import { getArticulosByModulo, getArticuloBySlug } from '@services/articulos.service'
 import './SaludMental.css'
 
-const TEMAS = ['Todos', 'Estrés', 'Ansiedad', 'Depresión', 'Mindfulness', 'Resiliencia']
+const CATEGORIAS = [
+  { label: 'Todos', valor: null },
+  { label: 'Técnicas', valor: 'tecnicas' },
+  { label: 'Hábitos', valor: 'habitos' },
+]
 
 const SENALES = [
   { icon: '😴', text: 'Trastornos del sueño persistentes' },
@@ -32,7 +36,7 @@ const FAQS = [
 export default function SaludMental() {
   const { slug } = useParams()
   const [articulos, setArticulos] = useState([])
-  const [tema, setTema] = useState('Todos')
+  const [categoria, setCategoria] = useState(null)
   const [loading, setLoading] = useState(true)
   const [articulo, setArticulo] = useState(null)
 
@@ -41,10 +45,10 @@ export default function SaludMental() {
       getArticuloBySlug(slug).then((a) => { setArticulo(a); setLoading(false) })
     } else {
       setLoading(true)
-      getArticulosByModulo('salud-mental', tema === 'Todos' ? null : tema)
+      getArticulosByModulo('salud-mental', categoria)
         .then(setArticulos).finally(() => setLoading(false))
     }
-  }, [slug, tema])
+  }, [slug, categoria])
 
   if (slug && articulo) {
     return (
@@ -90,9 +94,9 @@ export default function SaludMental() {
         <section aria-labelledby="recursos-sm-title">
           <div className="module-section-header">
             <h2 id="recursos-sm-title" className="module-section-title">Artículos y recursos</h2>
-            <div className="module-filters" role="group" aria-label="Filtrar por tema">
-              {TEMAS.map((t) => (
-                <button key={t} onClick={() => setTema(t)} className={`filter-btn ${tema === t ? 'filter-btn--active' : ''}`} aria-pressed={tema === t}>{t}</button>
+            <div className="module-filters" role="group" aria-label="Filtrar artículos por categoría">
+              {CATEGORIAS.map((c) => (
+                <button key={c.label} onClick={() => setCategoria(c.valor)} className={`filter-btn ${categoria === c.valor ? 'filter-btn--active' : ''}`} aria-pressed={categoria === c.valor}>{c.label}</button>
               ))}
             </div>
           </div>
@@ -104,8 +108,8 @@ export default function SaludMental() {
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">🧠</div>
-              <h3>Próximamente</h3>
-              <p>Estamos preparando recursos de salud mental. ¡Vuelve pronto!</p>
+              <h3>Sin artículos en esta categoría</h3>
+              <p>Prueba seleccionando «Todos» para ver todo el contenido disponible.</p>
             </div>
           )}
         </section>

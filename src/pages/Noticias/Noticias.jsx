@@ -72,8 +72,8 @@ export default function Noticias() {
         ) : noticias.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state__icon">📰</div>
-            <h2>Próximamente</h2>
-            <p>Estamos preparando las primeras noticias. ¡Vuelve pronto!</p>
+            <h2>No hay noticias publicadas</h2>
+            <p>Estamos actualizando el contenido. Vuelve en breve.</p>
           </div>
         ) : (
           <section aria-labelledby="noticias-title">

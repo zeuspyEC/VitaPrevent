@@ -9,7 +9,12 @@ import Spinner from '@components/ui/Spinner/Spinner'
 import { getArticulosByModulo, getArticuloBySlug } from '@services/articulos.service'
 import './Prevencion.css'
 
-const AREAS = ['Todos', 'Vacunación', 'Factores de riesgo', 'Enfermedades crónicas', 'Tamizajes', 'Medio ambiente']
+const CATEGORIAS = [
+  { label: 'Todos', valor: null },
+  { label: 'Vacunas', valor: 'vacunas' },
+  { label: 'Chequeos', valor: 'chequeos' },
+  { label: 'Hábitos', valor: 'habitos' },
+]
 
 const PILARES = [
   { icon: '💉', title: 'Vacunación', desc: 'Las vacunas son la herramienta de salud pública más efectiva para prevenir enfermedades infecciosas.', color: 'blue' },
@@ -28,7 +33,7 @@ const FAQS = [
 export default function Prevencion() {
   const { slug } = useParams()
   const [articulos, setArticulos] = useState([])
-  const [area, setArea] = useState('Todos')
+  const [categoria, setCategoria] = useState(null)
   const [loading, setLoading] = useState(true)
   const [articulo, setArticulo] = useState(null)
 
@@ -37,10 +42,10 @@ export default function Prevencion() {
       getArticuloBySlug(slug).then((a) => { setArticulo(a); setLoading(false) })
     } else {
       setLoading(true)
-      getArticulosByModulo('prevencion', area === 'Todos' ? null : area)
+      getArticulosByModulo('prevencion', categoria)
         .then(setArticulos).finally(() => setLoading(false))
     }
-  }, [slug, area])
+  }, [slug, categoria])
 
   if (slug && articulo) {
     return (
@@ -86,8 +91,8 @@ export default function Prevencion() {
           <div className="module-section-header">
             <h2 id="articulos-pv-title" className="module-section-title">Guías y artículos</h2>
             <div className="module-filters" role="group" aria-label="Filtrar por área de prevención">
-              {AREAS.map((a) => (
-                <button key={a} onClick={() => setArea(a)} className={`filter-btn ${area === a ? 'filter-btn--active' : ''}`} aria-pressed={area === a}>{a}</button>
+              {CATEGORIAS.map((c) => (
+                <button key={c.label} onClick={() => setCategoria(c.valor)} className={`filter-btn ${categoria === c.valor ? 'filter-btn--active' : ''}`} aria-pressed={categoria === c.valor}>{c.label}</button>
               ))}
             </div>
           </div>
@@ -99,8 +104,8 @@ export default function Prevencion() {
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">🛡️</div>
-              <h3>Próximamente</h3>
-              <p>Estamos preparando guías de prevención. ¡Vuelve pronto!</p>
+              <h3>Sin artículos en esta categoría</h3>
+              <p>Prueba seleccionando «Todos» para ver todo el contenido disponible.</p>
             </div>
           )}
         </section>

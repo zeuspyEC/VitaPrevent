@@ -9,7 +9,12 @@ import Spinner from '@components/ui/Spinner/Spinner'
 import { getArticulosByModulo, getArticuloBySlug } from '@services/articulos.service'
 import './ActividadFisica.css'
 
-const NIVELES = ['Todos', 'Principiante', 'Intermedio', 'Avanzado']
+const CATEGORIAS = [
+  { label: 'Todos', valor: null },
+  { label: 'Principios', valor: 'principios' },
+  { label: 'Por grupos', valor: 'grupos' },
+  { label: 'Prevención', valor: 'prevencion' },
+]
 
 const BENEFICIOS = [
   { icon: '❤️', title: 'Salud cardiovascular', desc: 'Reduce el riesgo de enfermedades del corazón hasta en un 35%.' },
@@ -30,7 +35,7 @@ const FAQS = [
 export default function ActividadFisica() {
   const { slug } = useParams()
   const [articulos, setArticulos] = useState([])
-  const [nivel, setNivel] = useState('Todos')
+  const [categoria, setCategoria] = useState(null)
   const [loading, setLoading] = useState(true)
   const [articulo, setArticulo] = useState(null)
 
@@ -39,10 +44,10 @@ export default function ActividadFisica() {
       getArticuloBySlug(slug).then((a) => { setArticulo(a); setLoading(false) })
     } else {
       setLoading(true)
-      getArticulosByModulo('actividad-fisica', nivel === 'Todos' ? null : nivel)
+      getArticulosByModulo('actividad-fisica', categoria)
         .then(setArticulos).finally(() => setLoading(false))
     }
-  }, [slug, nivel])
+  }, [slug, categoria])
 
   if (slug && articulo) {
     return (
@@ -87,9 +92,9 @@ export default function ActividadFisica() {
         <section aria-labelledby="rutinas-title">
           <div className="module-section-header">
             <h2 id="rutinas-title" className="module-section-title">Rutinas y guías</h2>
-            <div className="module-filters" role="group" aria-label="Filtrar por nivel">
-              {NIVELES.map((n) => (
-                <button key={n} onClick={() => setNivel(n)} className={`filter-btn ${nivel === n ? 'filter-btn--active' : ''}`} aria-pressed={nivel === n}>{n}</button>
+            <div className="module-filters" role="group" aria-label="Filtrar artículos por categoría">
+              {CATEGORIAS.map((c) => (
+                <button key={c.label} onClick={() => setCategoria(c.valor)} className={`filter-btn ${categoria === c.valor ? 'filter-btn--active' : ''}`} aria-pressed={categoria === c.valor}>{c.label}</button>
               ))}
             </div>
           </div>
@@ -103,8 +108,8 @@ export default function ActividadFisica() {
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">🏃</div>
-              <h3>Próximamente</h3>
-              <p>Estamos preparando rutinas de ejercicio. ¡Vuelve pronto!</p>
+              <h3>Sin artículos en esta categoría</h3>
+              <p>Prueba seleccionando «Todos» para ver todo el contenido disponible.</p>
             </div>
           )}
         </section>

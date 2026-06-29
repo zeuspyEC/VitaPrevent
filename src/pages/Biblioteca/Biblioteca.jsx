@@ -110,11 +110,11 @@ export default function Biblioteca() {
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">📚</div>
-              <h3>{busqueda ? 'Sin resultados' : 'Próximamente'}</h3>
+              <h3>{busqueda ? 'Sin resultados' : 'Sin recursos en esta categoría'}</h3>
               <p>
                 {busqueda
                   ? `No encontramos recursos para "${busqueda}". Intenta con otros términos.`
-                  : 'Estamos preparando los recursos de la biblioteca. ¡Vuelve pronto!'}
+                  : 'Prueba seleccionando «Todos» o cambiando el módulo.'}
               </p>
             </div>
           )}

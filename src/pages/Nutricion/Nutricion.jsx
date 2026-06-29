@@ -13,7 +13,12 @@ import { getArticulosByModulo, getArticuloBySlug } from '@services/articulos.ser
 import { calcularIMC, interpretarIMC, validateIMC } from '@utils/validators'
 import './Nutricion.css'
 
-const CATEGORIAS = ['Todos', 'Alimentación', 'Vitaminas', 'Hidratación', 'Recetas', 'Mitos']
+const CATEGORIAS = [
+  { label: 'Todos', valor: null },
+  { label: 'Conceptos', valor: 'conceptos' },
+  { label: 'Hábitos', valor: 'habitos' },
+  { label: 'Dietas', valor: 'dietas' },
+]
 
 const FAQS_ESTATICAS = [
   { id: 'f1', question: '¿Cuántas porciones de frutas y verduras debo comer al día?', answer: 'La OMS recomienda consumir al menos 400 g (cinco porciones) de frutas y hortalizas al día, excluyendo las papas, los camotes y otras raíces feculentas.' },
@@ -25,7 +30,7 @@ const FAQS_ESTATICAS = [
 export default function Nutricion() {
   const { slug } = useParams()
   const [articulos, setArticulos] = useState([])
-  const [categoriaActiva, setCategoriaActiva] = useState('Todos')
+  const [categoriaActiva, setCategoriaActiva] = useState(null)
   const [loading, setLoading] = useState(true)
   const [articuloDetalle, setArticuloDetalle] = useState(null)
   const [imc, setImc] = useState({ peso: '', talla: '' })
@@ -36,9 +41,8 @@ export default function Nutricion() {
     if (slug) {
       getArticuloBySlug(slug).then((a) => { setArticuloDetalle(a); setLoading(false) })
     } else {
-      const cat = categoriaActiva === 'Todos' ? null : categoriaActiva
       setLoading(true)
-      getArticulosByModulo('nutricion', cat)
+      getArticulosByModulo('nutricion', categoriaActiva)
         .then(setArticulos)
         .finally(() => setLoading(false))
     }
@@ -87,12 +91,12 @@ export default function Nutricion() {
         <div className="nutricion-filters" role="group" aria-label="Filtrar artículos por categoría">
           {CATEGORIAS.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setCategoriaActiva(cat)}
-              className={`filter-btn ${categoriaActiva === cat ? 'filter-btn--active' : ''}`}
-              aria-pressed={categoriaActiva === cat}
+              key={cat.label}
+              onClick={() => setCategoriaActiva(cat.valor)}
+              className={`filter-btn ${categoriaActiva === cat.valor ? 'filter-btn--active' : ''}`}
+              aria-pressed={categoriaActiva === cat.valor}
             >
-              {cat}
+              {cat.label}
             </button>
           ))}
         </div>
@@ -109,8 +113,8 @@ export default function Nutricion() {
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">🥗</div>
-              <h3>Próximamente</h3>
-              <p>Estamos preparando artículos de nutrición. ¡Vuelve pronto!</p>
+              <h3>Sin artículos en esta categoría</h3>
+              <p>Prueba seleccionando «Todos» para ver todo el contenido disponible.</p>
             </div>
           )}
         </section>
