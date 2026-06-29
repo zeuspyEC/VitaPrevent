@@ -13,45 +13,12 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Tabs de tipo */
 .biblioteca-tipo-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-.tipo-tab {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-text-muted);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  transition: all var(--duration-base);
-}
-
-.tipo-tab:hover {
-  background: var(--color-bg-subtle);
-  color: var(--color-text);
-}
-
-.tipo-tab--active {
-  background: var(--color-navy-900);
-  border-color: var(--color-navy-900);
-  color: var(--color-white);
-  font-weight: var(--font-semibold);
-}
-
-.tipo-tab:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: 2px;
-}
-
-/* Filtros módulo */
 .biblioteca-modulo-filters {
   display: flex;
   flex-wrap: wrap;
