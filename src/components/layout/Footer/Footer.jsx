@@ -5,18 +5,19 @@ import './Footer.css'
 const FOOTER_LINKS = {
   plataforma: [
     { label: 'Inicio', path: ROUTES.HOME },
-    { label: 'Nutrición', path: ROUTES.NUTRICION },
-    { label: 'Actividad Física', path: ROUTES.ACTIVIDAD_FISICA },
+    { label: 'Atención Primaria', path: ROUTES.NUTRICION },
+    { label: 'Vacunación', path: ROUTES.ACTIVIDAD_FISICA },
     { label: 'Salud Mental', path: ROUTES.SALUD_MENTAL },
+    { label: 'Emergencias', path: ROUTES.PREVENCION },
   ],
   recursos: [
-    { label: 'Prevención', path: ROUTES.PREVENCION },
     { label: 'Biblioteca Digital', path: ROUTES.BIBLIOTECA },
     { label: 'Noticias', path: ROUTES.NOTICIAS },
   ],
   institucional: [
     { label: 'Nosotros', path: ROUTES.NOSOTROS },
     { label: 'Contacto', path: ROUTES.CONTACTO },
+    { label: 'Declaración de accesibilidad', path: ROUTES.ACCESIBILIDAD },
   ],
 }
 
@@ -36,10 +37,10 @@ export default function Footer() {
             <span className="footer__logo-name">VitaPrevent</span>
           </Link>
           <p className="footer__description">
-            Plataforma digital dedicada a promover hábitos saludables, educación preventiva y
-            recursos informativos confiables sobre salud física y mental.
+            Portal de servicios públicos de salud del Ecuador. Información oficial del MSP,
+            IESS, ECU 911 y OPS para que ningún ciudadano quede fuera por falta de acceso.
           </p>
-          <p className="footer__slogan">"Tu bienestar comienza con la prevención."</p>
+          <p className="footer__slogan">"Tu salud, un derecho garantizado."</p>
         </div>
 
         <nav aria-label="Navegación del pie de página">
@@ -87,16 +88,9 @@ export default function Footer() {
           </p>
           <p className="footer__a11y">
             <span aria-hidden="true">♿</span>{' '}
-            Accesible conforme a{' '}
-            <a
-              href="https://www.w3.org/TR/WCAG22/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer__a11y-link"
-            >
-              WCAG 2.2 Nivel AA
-              <span className="sr-only"> (abre en nueva pestaña)</span>
-            </a>
+            <Link to={ROUTES.ACCESIBILIDAD} className="footer__a11y-link">
+              Declaración de accesibilidad WCAG 2.2 AA
+            </Link>
           </p>
         </div>
       </div>

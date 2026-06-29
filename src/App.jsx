@@ -29,6 +29,7 @@ const AdminMensajes   = lazy(() => import('@pages/Admin/Mensajes/Mensajes'))
 const AdminNoticias     = lazy(() => import('@pages/Admin/Noticias/Noticias'))
 const AdminRecursos     = lazy(() => import('@pages/Admin/Recursos/Recursos'))
 const NoticiasDetalle   = lazy(() => import('@pages/NoticiasDetalle/NoticiasDetalle'))
+const Accesibilidad     = lazy(() => import('@pages/Accesibilidad/Accesibilidad'))
 
 function PageLoader() {
   return (
@@ -88,6 +89,7 @@ export default function App() {
                   <Route path="/noticias/:id"           element={<NoticiasDetalle />} />
                   <Route path={ROUTES.CONTACTO}         element={<Contacto />} />
                   <Route path={ROUTES.NOSOTROS}         element={<Nosotros />} />
+                  <Route path={ROUTES.ACCESIBILIDAD}    element={<Accesibilidad />} />
                   <Route path="*"                       element={<NotFound />} />
                 </Routes>
               </Suspense>

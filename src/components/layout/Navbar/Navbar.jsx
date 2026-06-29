@@ -47,7 +47,7 @@ export default function Navbar() {
           </svg>
           <span className="navbar__brand">
             <span className="navbar__brand-name">VitaPrevent</span>
-            <span className="navbar__brand-slogan">Tu bienestar comienza aquí</span>
+            <span className="navbar__brand-slogan">Tu salud, un derecho garantizado</span>
           </span>
         </Link>
 

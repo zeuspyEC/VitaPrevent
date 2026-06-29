@@ -19,7 +19,7 @@ export default function NotFound() {
               Volver al inicio
             </Link>
             <Link to={ROUTES.NUTRICION} className="btn btn--outline btn--lg">
-              Explorar nutrición
+              Servicios de salud
             </Link>
           </div>
         </div>

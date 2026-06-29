@@ -96,7 +96,7 @@ export default function Nutricion() {
             <div className="nutricion-loading"><Spinner size="lg" label="Cargando artículos…" /></div>
           ) : articulos.length > 0 ? (
             <div className="cards-grid">
-              {articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="nutricion" />)}
+              {articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="atencion-primaria" />)}
             </div>
           ) : (
             <div className="empty-state">

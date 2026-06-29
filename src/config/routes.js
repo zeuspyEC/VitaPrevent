@@ -20,6 +20,7 @@ export const ROUTES = {
   ADMIN_FAQS: '/admin/faqs',
   ADMIN_MENSAJES: '/admin/mensajes',
   ADMIN_LOGIN: '/admin/login',
+  ACCESIBILIDAD: '/accesibilidad',
 }
 
 export const NAV_ITEMS = [

@@ -93,7 +93,7 @@ export default function Prevencion() {
           {loading ? (
             <div className="module-loading"><Spinner size="lg" label="Cargando artículos de prevención…" /></div>
           ) : articulos.length > 0 ? (
-            <div className="cards-grid">{articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="prevencion" />)}</div>
+            <div className="cards-grid">{articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="emergencias" />)}</div>
           ) : (
             <div className="empty-state">
               <div className="empty-state__icon">🛡️</div>

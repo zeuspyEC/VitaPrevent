@@ -169,10 +169,32 @@ const EC_SALUD = [
 ]
 
 const FEATURES = [
-  { icon: '🏛️', title: 'Información oficial', desc: 'Contenido basado en fuentes del MSP, IESS, OPS y organismos de salud pública del Ecuador.' },
-  { icon: '♿', title: 'Universalmente accesible', desc: 'Diseñado bajo WCAG 2.2 Nivel AA para que ningún ciudadano quede fuera por sus capacidades.' },
-  { icon: '🔒', title: 'Sin publicidad ni datos', desc: 'No rastreamos a nuestros usuarios. Tu privacidad es un principio, no una política.' },
-  { icon: '📱', title: 'Funciona en todo', desc: 'Optimizado para móvil, tablet y escritorio. Accesible desde cualquier dispositivo, en cualquier momento.' },
+  {
+    icon: '🏛️', color: 'blue',
+    title: 'Fuentes oficiales del Estado',
+    desc: 'Toda la información proviene de organismos oficiales: MSP, IESS, ECU 911, OPS y MINEDUC. Nada inventado, todo verificable.',
+    tag: 'MSP · IESS · OPS',
+  },
+  {
+    icon: '♿', color: 'violet',
+    title: 'Accesible para todos',
+    desc: 'Construido con WCAG 2.2 Nivel AA: lectores de pantalla, teclado, contraste alto y diseño responsive. Ningún ciudadano queda fuera.',
+    tag: 'WCAG 2.2 AA',
+    link: '/accesibilidad',
+    linkLabel: 'Ver declaración de accesibilidad',
+  },
+  {
+    icon: '🔒', color: 'green',
+    title: 'Sin publicidad ni rastreo',
+    desc: 'No vendemos datos ni mostramos publicidad. El sitio no usa Google Analytics ni cookies de seguimiento. Tu privacidad es un principio.',
+    tag: 'Privacidad garantizada',
+  },
+  {
+    icon: '📱', color: 'teal',
+    title: 'Funciona en cualquier dispositivo',
+    desc: 'Optimizado para celular, tablet y escritorio desde 320px. Carga rápida incluso con conexiones lentas gracias a code splitting y lazy loading.',
+    tag: 'Móvil · Tablet · Escritorio',
+  },
 ]
 
 export default function Home() {
@@ -323,10 +345,20 @@ export default function Home() {
           </header>
           <ul className="features-grid" role="list">
             {FEATURES.map((f) => (
-              <li key={f.title} className="feature-card">
-                <span className="feature-card__icon" aria-hidden="true">{f.icon}</span>
-                <h3 className="feature-card__title">{f.title}</h3>
-                <p className="feature-card__desc">{f.desc}</p>
+              <li key={f.title} className={`feature-card feature-card--${f.color}`}>
+                <div className="feature-card__icon-wrap" aria-hidden="true">
+                  <span className="feature-card__icon">{f.icon}</span>
+                </div>
+                <div className="feature-card__body">
+                  {f.tag && <span className="feature-card__tag">{f.tag}</span>}
+                  <h3 className="feature-card__title">{f.title}</h3>
+                  <p className="feature-card__desc">{f.desc}</p>
+                  {f.link && (
+                    <Link to={f.link} className="feature-card__link">
+                      {f.linkLabel} →
+                    </Link>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

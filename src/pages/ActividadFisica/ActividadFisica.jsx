@@ -96,7 +96,7 @@ export default function ActividadFisica() {
             <div className="module-loading"><Spinner size="lg" label="Cargando artículos de vacunación…" /></div>
           ) : articulos.length > 0 ? (
             <div className="cards-grid">
-              {articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="actividad-fisica" />)}
+              {articulos.map((a) => <ArticleCard key={a.id} articulo={a} moduloBase="vacunacion" />)}
             </div>
           ) : (
             <div className="empty-state">
