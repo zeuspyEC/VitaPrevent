@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vitaprevent-b2e34.web.app/sitemap.xml

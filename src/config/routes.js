@@ -1,0 +1,33 @@
+export const ROUTES = {
+  HOME: '/',
+  NUTRICION: '/nutricion',
+  NUTRICION_ARTICULO: '/nutricion/:slug',
+  ACTIVIDAD_FISICA: '/actividad-fisica',
+  ACTIVIDAD_FISICA_ARTICULO: '/actividad-fisica/:slug',
+  SALUD_MENTAL: '/salud-mental',
+  SALUD_MENTAL_ARTICULO: '/salud-mental/:slug',
+  PREVENCION: '/prevencion',
+  PREVENCION_ARTICULO: '/prevencion/:slug',
+  BIBLIOTECA: '/biblioteca',
+  NOTICIAS: '/noticias',
+  NOTICIA: '/noticias/:id',
+  CONTACTO: '/contacto',
+  NOSOTROS: '/nosotros',
+  ADMIN: '/admin',
+  ADMIN_ARTICULOS: '/admin/articulos',
+  ADMIN_NOTICIAS: '/admin/noticias',
+  ADMIN_RECURSOS: '/admin/recursos',
+  ADMIN_FAQS: '/admin/faqs',
+  ADMIN_MENSAJES: '/admin/mensajes',
+  ADMIN_LOGIN: '/admin/login',
+}
+
+export const NAV_ITEMS = [
+  { label: 'Inicio', path: ROUTES.HOME },
+  { label: 'Nutrición', path: ROUTES.NUTRICION },
+  { label: 'Actividad Física', path: ROUTES.ACTIVIDAD_FISICA },
+  { label: 'Salud Mental', path: ROUTES.SALUD_MENTAL },
+  { label: 'Prevención', path: ROUTES.PREVENCION },
+  { label: 'Biblioteca', path: ROUTES.BIBLIOTECA },
+  { label: 'Noticias', path: ROUTES.NOTICIAS },
+]

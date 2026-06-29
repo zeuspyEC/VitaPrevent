@@ -1,0 +1,18 @@
+{
+  "name": "VitaPrevent",
+  "short_name": "VitaPrevent",
+  "description": "Tu bienestar comienza con la prevención",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1b2a",
+  "theme_color": "#0d1b2a",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
