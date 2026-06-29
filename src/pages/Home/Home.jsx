@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import PageWrapper from '@components/layout/PageWrapper/PageWrapper'
 import NewsCard from '@components/common/NewsCard/NewsCard'
@@ -6,6 +6,132 @@ import { SkeletonGrid } from '@components/common/Skeleton/Skeleton'
 import { ROUTES } from '@config/routes'
 import { getNoticias } from '@services/noticias.service'
 import './Home.css'
+
+function useCounter(target, duration, active) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!active) return
+    let raf
+    const start = performance.now()
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1)
+      const eased = 1 - (1 - t) ** 3
+      setVal(Math.round(eased * target))
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, duration, active])
+  return val
+}
+
+const DASH_MODS = [
+  { icon: '🥗', label: 'Nutrición', path: ROUTES.NUTRICION },
+  { icon: '🏃', label: 'Actividad', path: ROUTES.ACTIVIDAD_FISICA },
+  { icon: '🧠', label: 'Mental', path: ROUTES.SALUD_MENTAL },
+  { icon: '🛡️', label: 'Prevención', path: ROUTES.PREVENCION },
+]
+
+function HeroDashboard({ latestNoticia }) {
+  const [active, setActive] = useState(false)
+  const containerRef = useRef(null)
+  const cardRef = useRef(null)
+
+  const artCount = useCounter(47, 1800, active)
+  const pctCount = useCounter(100, 1400, active)
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setActive(true) },
+      { threshold: 0.2 }
+    )
+    if (containerRef.current) obs.observe(containerRef.current)
+    return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card) return
+    const move = (e) => {
+      const r = card.getBoundingClientRect()
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 14
+      const y = ((e.clientY - r.top) / r.height - 0.5) * -14
+      card.style.transform = `perspective(900px) rotateY(${x}deg) rotateX(${y}deg)`
+    }
+    const leave = () => { card.style.transform = '' }
+    card.addEventListener('mousemove', move)
+    card.addEventListener('mouseleave', leave)
+    return () => { card.removeEventListener('mousemove', move); card.removeEventListener('mouseleave', leave) }
+  }, [])
+
+  return (
+    <div className="hero-dash" ref={containerRef}>
+      {latestNoticia && (
+        <Link to={`/noticias/${latestNoticia.id}`} className="hero-dash__badge" tabIndex="-1">
+          <span className="hero-dash__badge-dot" />
+          <span className="hero-dash__badge-label">Última noticia</span>
+          <span className="hero-dash__badge-title">
+            {latestNoticia.titulo?.slice(0, 36)}{latestNoticia.titulo?.length > 36 ? '…' : ''}
+          </span>
+        </Link>
+      )}
+
+      <div className="hero-dash__card" ref={cardRef}>
+        <div className="hero-dash__card-header">
+          <div className="hero-dash__brand">
+            <span className="hero-dash__brand-icon" aria-hidden="true">+</span>
+            <span className="hero-dash__brand-name">VitaPrevent</span>
+          </div>
+          <span className="hero-dash__live-badge">
+            <span className="hero-dash__live-dot" />
+            EN VIVO
+          </span>
+        </div>
+        <p className="hero-dash__card-subtitle">Panel de bienestar · Ecuador</p>
+
+        <div className="hero-dash__stats">
+          <div className="hero-dash__stat">
+            <span className="hero-dash__stat-num">{artCount}<sup>+</sup></span>
+            <span className="hero-dash__stat-lbl">Artículos</span>
+            <div className="hero-dash__bar">
+              <div className="hero-dash__bar-fill hero-dash__bar-fill--blue" style={{ width: active ? '82%' : '0%' }} />
+            </div>
+          </div>
+          <div className="hero-dash__stat">
+            <span className="hero-dash__stat-num">4</span>
+            <span className="hero-dash__stat-lbl">Módulos</span>
+            <div className="hero-dash__bar">
+              <div className="hero-dash__bar-fill hero-dash__bar-fill--teal" style={{ width: active ? '100%' : '0%' }} />
+            </div>
+          </div>
+          <div className="hero-dash__stat">
+            <span className="hero-dash__stat-num">{pctCount}<sup>%</sup></span>
+            <span className="hero-dash__stat-lbl">Gratuito</span>
+            <div className="hero-dash__bar">
+              <div className="hero-dash__bar-fill hero-dash__bar-fill--green" style={{ width: active ? '100%' : '0%' }} />
+            </div>
+          </div>
+        </div>
+
+        <hr className="hero-dash__divider" />
+
+        <p className="hero-dash__access-label">Acceso rápido</p>
+        <div className="hero-dash__modules">
+          {DASH_MODS.map((m) => (
+            <Link key={m.path} to={m.path} className="hero-dash__mod" tabIndex="-1">
+              <span className="hero-dash__mod-icon" aria-hidden="true">{m.icon}</span>
+              <span className="hero-dash__mod-lbl">{m.label}</span>
+            </Link>
+          ))}
+        </div>
+
+        <Link to={ROUTES.NUTRICION} className="hero-dash__cta" tabIndex="-1">
+          Explorar todo el contenido <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+    </div>
+  )
+}
 
 const MODULES = [
   { icon: '🥗', title: 'Nutrición', description: 'Guías alimenticias, recetas saludables y todo sobre hidratación y vitaminas.', path: ROUTES.NUTRICION, color: 'green' },
@@ -78,18 +204,7 @@ export default function Home() {
             <div className="hero__orb hero__orb--1" />
             <div className="hero__orb hero__orb--2" />
             <div className="hero__orb hero__orb--3" />
-            <div className="hero__card-float hero__card-float--1">
-              <span>🥗</span>
-              <div><strong>Nutrición</strong><p>Guías alimenticias</p></div>
-            </div>
-            <div className="hero__card-float hero__card-float--2">
-              <span>💪</span>
-              <div><strong>Actividad</strong><p>Rutinas para ti</p></div>
-            </div>
-            <div className="hero__card-float hero__card-float--3">
-              <span>🧠</span>
-              <div><strong>Bienestar</strong><p>Salud mental</p></div>
-            </div>
+            <HeroDashboard latestNoticia={noticias[0]} />
           </div>
         </div>
       </section>

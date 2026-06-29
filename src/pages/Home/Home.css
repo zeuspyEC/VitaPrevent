@@ -89,12 +89,13 @@
 /* ── Orbs decorativos ── */
 .hero__visual {
   position: relative;
-  height: 420px;
   display: none;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 @media (min-width: 1024px) {
-  .hero__visual { display: block; }
+  .hero__visual { display: flex; }
 }
 
 .hero__orb {
@@ -461,4 +462,316 @@
   .hero__orb { animation: none; }
   .module-card:hover { transform: none; }
   .module-card:hover .module-card__arrow { transform: none; }
+}
+
+/* ══════════════════════════════════════════════
+   Hero Dashboard — widget flotante 3D
+══════════════════════════════════════════════ */
+.hero-dash {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+  animation: heroDashFloat 6s ease-in-out infinite;
+  z-index: 2;
+  width: 100%;
+}
+
+@keyframes heroDashFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-16px); }
+}
+
+/* ── Noticia badge ── */
+.hero-dash__badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(144, 202, 249, 0.18);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  transition: background var(--duration-base), border-color var(--duration-base);
+  max-width: 340px;
+  min-width: 0;
+}
+
+.hero-dash__badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(144, 202, 249, 0.35);
+}
+
+.hero-dash__badge-dot {
+  width: 7px;
+  height: 7px;
+  background: #4ade80;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: dashDotPulse 2s ease-in-out infinite;
+}
+
+.hero-dash__badge-label {
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  color: #4ade80;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hero-dash__badge-title {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* ── Card principal ── */
+.hero-dash__card {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(10, 22, 36, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(144, 202, 249, 0.14);
+  border-radius: 20px;
+  padding: var(--space-6);
+  box-shadow:
+    0 0 0 1px rgba(21, 101, 192, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.45),
+    0 0 100px rgba(21, 101, 192, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-dash__card:hover {
+  box-shadow:
+    0 0 0 1px rgba(21, 101, 192, 0.18),
+    0 32px 80px rgba(0, 0, 0, 0.5),
+    0 0 120px rgba(21, 101, 192, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* ── Card header ── */
+.hero-dash__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+}
+
+.hero-dash__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero-dash__brand-icon {
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, var(--color-blue-600), var(--color-blue-700));
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: var(--font-extrabold);
+  color: #fff;
+  flex-shrink: 0;
+  line-height: 26px;
+  text-align: center;
+}
+
+.hero-dash__brand-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+.hero-dash__live-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: var(--radius-full);
+  padding: 3px 9px;
+  font-size: 9px;
+  font-weight: var(--font-bold);
+  color: #4ade80;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero-dash__live-dot {
+  width: 5px;
+  height: 5px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: dashDotPulse 1.5s ease-in-out infinite;
+}
+
+.hero-dash__card-subtitle {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0 0 var(--space-5) 0;
+  letter-spacing: 0.04em;
+}
+
+/* ── Stats ── */
+.hero-dash__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.hero-dash__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hero-dash__stat-num {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-extrabold);
+  color: var(--color-white);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.hero-dash__stat-num sup {
+  font-size: 0.55em;
+  font-weight: var(--font-bold);
+  color: var(--color-blue-300);
+  vertical-align: super;
+  letter-spacing: 0;
+}
+
+.hero-dash__stat-lbl {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: var(--font-semibold);
+}
+
+.hero-dash__bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  margin-top: var(--space-2);
+  overflow: hidden;
+}
+
+.hero-dash__bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-dash__bar-fill--blue  { background: linear-gradient(90deg, #1565C0, #90CAF9); }
+.hero-dash__bar-fill--teal  { background: linear-gradient(90deg, #00838f, #26c6da); }
+.hero-dash__bar-fill--green { background: linear-gradient(90deg, #16a34a, #4ade80); }
+
+/* ── Divider ── */
+.hero-dash__divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 0 0 var(--space-4) 0;
+}
+
+/* ── Acceso rápido ── */
+.hero-dash__access-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.28);
+  font-weight: var(--font-bold);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.hero-dash__modules {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.hero-dash__mod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-3) var(--space-2);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition:
+    background var(--duration-base),
+    border-color var(--duration-base),
+    transform var(--duration-base);
+}
+
+.hero-dash__mod:hover {
+  background: rgba(144, 202, 249, 0.1);
+  border-color: rgba(144, 202, 249, 0.22);
+  transform: translateY(-2px);
+}
+
+.hero-dash__mod-icon { font-size: 1.4rem; line-height: 1; }
+
+.hero-dash__mod-lbl {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: var(--font-semibold);
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+/* ── CTA ── */
+.hero-dash__cta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, #1565C0 0%, #1976D2 100%);
+  color: #fff !important;
+  text-decoration: none;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.01em;
+  transition: opacity var(--duration-base), transform var(--duration-base), box-shadow var(--duration-base);
+  box-shadow: 0 4px 16px rgba(21, 101, 192, 0.35);
+}
+
+.hero-dash__cta:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(21, 101, 192, 0.45);
+}
+
+@keyframes dashDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.75); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-dash { animation: none; }
+  .hero-dash__live-dot,
+  .hero-dash__badge-dot { animation: none; }
+  .hero-dash__bar-fill  { transition: none; }
+  .hero-dash__card      { transition: none; }
+  .hero-dash__mod:hover { transform: none; }
 }
