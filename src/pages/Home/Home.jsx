@@ -44,7 +44,7 @@ function HeroCube({ noticias }) {
       const cy = e.touches ? e.touches[0].clientY : e.clientY
       if (Math.hypot(cx - dd.startX, cy - dd.startY) > 4) dd.moved = true
       dd.rotY += (cx - dd.lastX) * 0.7
-      dd.rotX  = Math.max(-75, Math.min(35, dd.rotX - (cy - dd.lastY) * 0.7))
+      dd.rotX -= (cy - dd.lastY) * 0.7
       dd.lastX = cx; dd.lastY = cy
     }
     const onUp = () => { drag.current.active = false }
