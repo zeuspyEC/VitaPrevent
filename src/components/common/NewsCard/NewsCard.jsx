@@ -4,20 +4,24 @@ import Badge from '@components/ui/Badge/Badge'
 import './NewsCard.css'
 
 export default function NewsCard({ noticia, featured = false }) {
-  const { id, titulo, resumen, imagen, fecha, categoria } = noticia
+  const { id, titulo, resumen, imagen, fecha, creadoEn, categoria } = noticia
 
-  const fechaObj = fecha?.toDate?.()
+  const fechaObj = (fecha ?? creadoEn)?.toDate?.()
   const fechaStr = fechaObj
     ? fechaObj.toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' })
     : null
 
+  // imagen puede ser string URL (legado) u objeto {url, alt}
+  const imgUrl = typeof imagen === 'string' ? imagen : imagen?.url
+  const imgAlt = typeof imagen === 'string' ? titulo : (imagen?.alt || titulo)
+
   return (
     <article className={`news-card ${featured ? 'news-card--featured' : ''}`}>
-      {imagen?.url && (
+      {imgUrl && (
         <Link to={`/noticias/${id}`} tabIndex={-1} aria-hidden="true" className="news-card__img-link">
           <img
-            src={imagen.url}
-            alt={imagen.alt || ''}
+            src={imgUrl}
+            alt={imgAlt}
             className="news-card__img"
             loading={featured ? 'eager' : 'lazy'}
             width={featured ? 800 : 400}
@@ -57,8 +61,12 @@ NewsCard.propTypes = {
     id: PropTypes.string.isRequired,
     titulo: PropTypes.string.isRequired,
     resumen: PropTypes.string,
-    imagen: PropTypes.shape({ url: PropTypes.string, alt: PropTypes.string }),
+    imagen: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({ url: PropTypes.string, alt: PropTypes.string }),
+    ]),
     fecha: PropTypes.object,
+    creadoEn: PropTypes.object,
     categoria: PropTypes.string,
   }).isRequired,
   featured: PropTypes.bool,

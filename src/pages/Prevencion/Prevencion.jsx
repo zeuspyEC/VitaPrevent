@@ -4,6 +4,7 @@ import PageWrapper from '@components/layout/PageWrapper/PageWrapper'
 import Breadcrumb from '@components/layout/Breadcrumb/Breadcrumb'
 import SectionHero from '@components/common/SectionHero/SectionHero'
 import ArticleCard from '@components/common/ArticleCard/ArticleCard'
+import ArticleDetail from '@components/common/ArticleDetail/ArticleDetail'
 import Accordion from '@components/common/Accordion/Accordion'
 import Spinner from '@components/ui/Spinner/Spinner'
 import { getArticulosByModulo, getArticuloBySlug } from '@services/articulos.service'
@@ -48,15 +49,7 @@ export default function Prevencion() {
   }, [slug, categoria])
 
   if (slug && articulo) {
-    return (
-      <PageWrapper title={articulo.titulo}>
-        <div className="container module-article">
-          <Breadcrumb />
-          {articulo.imagen?.url && <img src={articulo.imagen.url} alt={articulo.imagen.alt || ''} className="module-article__img" />}
-          <article className="prose"><h1>{articulo.titulo}</h1><div dangerouslySetInnerHTML={{ __html: articulo.contenido }} /></article>
-        </div>
-      </PageWrapper>
-    )
+    return <ArticleDetail articulo={articulo} volverRuta="/prevencion" volverLabel="Volver a Prevención" />
   }
 
   return (

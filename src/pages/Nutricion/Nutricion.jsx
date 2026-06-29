@@ -4,6 +4,7 @@ import PageWrapper from '@components/layout/PageWrapper/PageWrapper'
 import Breadcrumb from '@components/layout/Breadcrumb/Breadcrumb'
 import SectionHero from '@components/common/SectionHero/SectionHero'
 import ArticleCard from '@components/common/ArticleCard/ArticleCard'
+import ArticleDetail from '@components/common/ArticleDetail/ArticleDetail'
 import Accordion from '@components/common/Accordion/Accordion'
 import Spinner from '@components/ui/Spinner/Spinner'
 import FormField from '@components/common/FormField/FormField'
@@ -58,20 +59,7 @@ export default function Nutricion() {
   }
 
   if (slug && articuloDetalle) {
-    return (
-      <PageWrapper title={articuloDetalle.titulo}>
-        <div className="container nutricion-article">
-          <Breadcrumb />
-          {articuloDetalle.imagen?.url && (
-            <img src={articuloDetalle.imagen.url} alt={articuloDetalle.imagen.alt || ''} className="nutricion-article__hero-img" />
-          )}
-          <article className="prose">
-            <h1>{articuloDetalle.titulo}</h1>
-            <div dangerouslySetInnerHTML={{ __html: articuloDetalle.contenido }} />
-          </article>
-        </div>
-      </PageWrapper>
-    )
+    return <ArticleDetail articulo={articuloDetalle} volverRuta="/nutricion" volverLabel="Volver a Nutrición" />
   }
 
   return (

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
 import PageWrapper from '@components/layout/PageWrapper/PageWrapper'
 import Breadcrumb from '@components/layout/Breadcrumb/Breadcrumb'
 import Badge from '@components/ui/Badge/Badge'
@@ -37,19 +38,24 @@ export default function NoticiasDetalle() {
   const fechaStr = fecha?.toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' })
   const fechaISO = fecha?.toISOString()
 
+  const imgUrl = typeof noticia.imagen === 'string' ? noticia.imagen : noticia.imagen?.url
+  const imgAlt = typeof noticia.imagen === 'string' ? noticia.titulo : (noticia.imagen?.alt || noticia.titulo)
+
   return (
     <PageWrapper title={noticia.titulo} description={noticia.resumen}>
       <div className="noticias-detalle container">
         <Breadcrumb />
 
         <article className="noticia-articulo" aria-labelledby="noticia-titulo">
-          {noticia.imagen?.url && (
+          {imgUrl && (
             <div className="noticia-articulo__hero">
               <img
-                src={noticia.imagen.url}
-                alt={noticia.imagen.alt || ''}
+                src={imgUrl}
+                alt={imgAlt}
                 className="noticia-articulo__img"
                 loading="eager"
+                width={1200}
+                height={525}
               />
             </div>
           )}
@@ -59,7 +65,7 @@ export default function NoticiasDetalle() {
               {noticia.categoria && <Badge variant="primary">{noticia.categoria}</Badge>}
               {fechaStr && (
                 <time dateTime={fechaISO} className="noticia-articulo__fecha">
-                  {fechaStr}
+                  <span className="sr-only">Publicado el </span>{fechaStr}
                 </time>
               )}
             </div>
@@ -74,10 +80,9 @@ export default function NoticiasDetalle() {
           </header>
 
           {noticia.contenido && (
-            <div
-              className="prose noticia-articulo__body"
-              dangerouslySetInnerHTML={{ __html: noticia.contenido }}
-            />
+            <div className="prose noticia-articulo__body">
+              <ReactMarkdown>{noticia.contenido}</ReactMarkdown>
+            </div>
           )}
 
           <footer className="noticia-articulo__footer">
