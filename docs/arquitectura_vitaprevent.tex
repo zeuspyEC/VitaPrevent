@@ -1,0 +1,464 @@
+% ============================================================
+%  DOCUMENTO DE ARQUITECTURA --- VitaPrevent
+%  Qué tiene el sitio, qué falta, análisis de brechas WCAG
+%  Compilar con: pdflatex arquitectura_vitaprevent.tex (2 veces)
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage[dvipsnames, table]{xcolor}
+
+\definecolor{navydeep}{HTML}{0D1B2A}
+\definecolor{royalblue}{HTML}{1565C0}
+\definecolor{lightblue}{HTML}{90CAF9}
+\definecolor{successgreen}{HTML}{16A34A}
+\definecolor{warningyellow}{HTML}{D97706}
+\definecolor{errored}{HTML}{DC2626}
+\definecolor{graymid}{HTML}{6B7280}
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\renewcommand{\arraystretch}{1.4}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.4em, itemsep=2pt}
+\usepackage{listings}
+\lstdefinestyle{webcode}{
+  backgroundcolor=\color{royalblue!8},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{royalblue}\bfseries,
+  stringstyle=\color{successgreen},
+  commentstyle=\color{graymid}\itshape,
+  numberstyle=\tiny\color{graymid},
+  numbers=left, numbersep=8pt,
+  breaklines=true, frame=single, framesep=4pt,
+  rulecolor=\color{lightblue!50},
+  xleftmargin=12pt, xrightmargin=4pt,
+  tabsize=2, showstringspaces=false,
+  extendedchars=true,
+  literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {¿}{{?`}}1 {¡}{{!`}}1
+    {→}{{\textrightarrow{}}}2,
+}
+\lstset{style=webcode}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{infobox}[1][]{enhanced, breakable,
+  colback=royalblue!6, colframe=royalblue,
+  fonttitle=\bfseries\small, title={#1}, arc=4pt, boxrule=0.8pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt}
+\newtcolorbox{successbox}[1][]{enhanced, breakable,
+  colback=successgreen!6, colframe=successgreen,
+  fonttitle=\bfseries\small, title={#1}, arc=4pt, boxrule=0.8pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt}
+\newtcolorbox{warnbox}[1][]{enhanced, breakable,
+  colback=warningyellow!8, colframe=warningyellow,
+  fonttitle=\bfseries\small, title={#1}, arc=4pt, boxrule=0.8pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt}
+\usepackage[colorlinks=true, linkcolor=royalblue, urlcolor=royalblue, unicode=true,
+  pdftitle={VitaPrevent - Arquitectura y Analisis de Brechas},
+  pdfauthor={Erick Costa, Jonathan Tipan, Javier Quilumba},
+  pdflang={es-EC}]{hyperref}
+\usepackage{amssymb}
+\newcommand{\cmark}{\textcolor{successgreen}{$\checkmark$}}
+\newcommand{\xmark}{\textcolor{errored}{$\times$}}
+\newcommand{\wmark}{\textcolor{warningyellow}{$\triangle$}}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{graymid}\textit{VitaPrevent --- Arquitectura y Análisis de Brechas}}
+\fancyhead[R]{\small\color{graymid}\thepage}
+\fancyfoot[C]{\small\color{graymid}\textit{Escuela Politécnica Nacional --- 2026}}
+\renewcommand{\headrulewidth}{0.4pt}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries\color{navydeep}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{royalblue}}{\thesubsection}{0.6em}{}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\usepackage{float}
+
+% ============================================================
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\Large\bfseries\color{navydeep} ESCUELA POLITÉCNICA NACIONAL}\\[4pt]
+{\normalsize Facultad de Ingeniería en Sistemas --- Ingeniería de Software}\\[4pt]
+{\normalsize Asignatura: Usabilidad y Accesibilidad}\\[2cm]
+{\color{royalblue}\rule{0.8\linewidth}{1.5pt}}\\[1cm]
+{\Huge\bfseries\color{navydeep} VitaPrevent}\\[0.4cm]
+{\Large\color{royalblue} Arquitectura Técnica y Análisis de Brechas}\\[0.3cm]
+{\large\itshape Portal de Servicios Públicos de Salud del Ecuador}\\[1cm]
+{\color{royalblue}\rule{0.8\linewidth}{0.8pt}}\\[1.5cm]
+\begin{tabular}{ll}
+  \textbf{Autores:} & Erick Costa, Jonathan Tipán, Javier Quilumba \\
+  \textbf{Repositorio:} & \texttt{github.com/zeuspyEC/VitaPrevent} \\
+  \textbf{Despliegue:} & \texttt{vitaprevent-b2e34.web.app} \\
+  \textbf{Fecha:} & Junio 2026 \\
+\end{tabular}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Resumen del documento}
+
+Este documento describe la arquitectura técnica completa de VitaPrevent y realiza un análisis exhaustivo de las brechas entre el estado actual del sistema y los requisitos del proyecto académico (Asignatura Usabilidad y Accesibilidad, EPN). Para cada brecha identificada se indica el estado, la prioridad de resolución y la acción correctiva.
+
+% ============================================================
+\section{Arquitectura general del sistema}
+
+\subsection{Stack tecnológico}
+
+\begin{table}[H]
+\centering
+\caption{Stack tecnológico de VitaPrevent}
+\begin{tabular}{@{}>{\bfseries}p{3.5cm} p{4.5cm} p{5.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Capa} & \textbf{Tecnología} & \textbf{Versión / Notas} \\
+\midrule
+Framework UI & React & 19.0.0 — hooks, React Router v6 \\
+Bundler & Vite & 6.3.5 — build, HMR, code splitting \\
+Base de datos & Firebase Firestore & v10 (modular SDK) \\
+Autenticación & Firebase Auth & v10 — email/password \\
+Hosting & Firebase Hosting & CDN global, HTTPS automático \\
+CI/CD & GitHub Actions & Deploy automático a push en main \\
+Estilos & CSS personalizado & Variables CSS (tokens), sin Bootstrap/Material \\
+Linting & ESLint + \texttt{jsx-a11y} & Plugin de accesibilidad en build \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Patrón de arquitectura}
+
+VitaPrevent sigue un patrón \textbf{SPA (Single Page Application)} con las siguientes capas:
+
+\begin{enumerate}
+  \item \textbf{Enrutamiento:} React Router v6 con \texttt{createBrowserRouter} y lazy loading por módulo.
+  \item \textbf{Capa de presentación:} Componentes React organizados en: \texttt{ui/} (átomos), \texttt{layout/} (marcos de página), \texttt{common/} (moléculas reutilizables), \texttt{pages/} (organismos completos).
+  \item \textbf{Capa de servicios:} \texttt{src/services/} — funciones puras que encapsulan las llamadas a Firestore.
+  \item \textbf{Capa de datos:} Firebase Firestore como base de datos documental NoSQL.
+  \item \textbf{Contextos:} \texttt{AuthContext} (sesión del administrador), \texttt{ToastContext} (notificaciones globales).
+\end{enumerate}
+
+\subsection{Estructura de directorios}
+
+\begin{lstlisting}[language=bash, caption={Árbol de directorios de \texttt{src/}}]
+src/
+  assets/           # Imágenes, íconos SVG, fuentes
+  components/
+    ui/             # Button, Badge, Spinner, Modal
+    layout/         # Navbar, Footer, SkipLink, Breadcrumb, PageWrapper
+    common/         # ArticleCard, ArticleDetail, FormField, Accordion, SectionHero
+  contexts/         # AuthContext, ToastContext
+  hooks/            # useFocusTrap, useAnnouncer
+  pages/            # Home, Nutricion, ActividadFisica, SaludMental,
+                    # Prevencion, Biblioteca, Noticias, Contacto, Nosotros,
+                    # Admin
+  services/         # articulos.service.js, recursos.service.js, noticias.service.js
+  styles/           # tokens.css, reset.css, global.css, animations.css
+  utils/            # validators.js, formatters.js
+  config/           # firebase.js, routes.js, constants.js
+  App.jsx           # Árbol de rutas principal
+  main.jsx          # Punto de entrada React
+\end{lstlisting}
+
+\subsection{Modelo de datos Firestore}
+
+\begin{table}[H]
+\centering
+\caption{Colecciones Firestore y sus campos principales}
+\begin{tabular}{@{}>{\bfseries}p{2.5cm} p{11cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Colección} & \textbf{Campos principales} \\
+\midrule
+\texttt{articulos} & \texttt{titulo, slug, resumen, contenido (HTML), modulo, categoria, etiquetas, imagen.url, imagen.alt, autor, fechaCreacion, estado} \\
+\texttt{recursos} & \texttt{titulo, tipo, url, descripcion, categoria, etiquetas} \\
+\texttt{noticias} & \texttt{titulo, slug, resumen, contenido, imagen.url, imagen.alt, fechaPublicacion, fuente} \\
+\texttt{mensajes} & \texttt{nombre, email, asunto, mensaje, fecha, leido} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Páginas y rutas implementadas}
+
+\begin{table}[H]
+\centering
+\caption{Mapa completo de rutas --- VitaPrevent}
+\begin{tabular}{@{}>{\ttfamily\small}p{4.5cm} >{\bfseries}p{3cm} p{5.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Ruta} & \textbf{Módulo} & \textbf{Contenido} \\
+\midrule
+/ & Inicio & Hero 3D, cifras de salud Ecuador, módulos, noticias recientes \\
+/atencion-primaria & Atención Primaria & Artículos MSP/IESS, calculadora IMC, FAQs, filtros \\
+/atencion-primaria/:slug & Artículo & Renderizado Markdown del artículo individual \\
+/vacunacion & Vacunación & PAI Ecuador, beneficios, artículos, FAQs \\
+/vacunacion/:slug & Artículo & Detalle de artículo de vacunación \\
+/salud-mental & Salud Mental & Señales de alerta, artículos, recursos, FAQs \\
+/salud-mental/:slug & Artículo & Detalle de artículo de salud mental \\
+/emergencias & Emergencias & ECU 911, SAMU, hospitales, primeros auxilios, FAQs \\
+/emergencias/:slug & Artículo & Detalle de artículo de emergencias \\
+/biblioteca & Biblioteca & Recursos digitales (PDF, video, enlace) filtrados \\
+/noticias & Noticias & Feed paginado de noticias de salud \\
+/noticias/:slug & Noticia & Artículo de noticia completo \\
+/contacto & Contacto & Formulario accesible con validación \\
+/nosotros & Nosotros & Equipo, misión, valores \\
+/admin & Panel Admin & Panel protegido con Firebase Auth (privado) \\
+/admin/login & Login Admin & Formulario de autenticación \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Componentes implementados}
+
+\subsection{Componentes de layout}
+
+\begin{table}[H]
+\centering
+\caption{Componentes de layout y su relevancia WCAG}
+\small
+\begin{tabular}{@{}>{\bfseries}p{3cm} p{5cm} p{5.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Componente} & \textbf{Función} & \textbf{WCAG implementado} \\
+\midrule
+SkipLink & Primer elemento del DOM & 2.4.1 Evitar bloques \\
+Navbar & Menú principal + hamburger & 2.1.1, 2.4.3, 4.1.2 (\texttt{aria-expanded, aria-current}) \\
+PageWrapper & Wrapper de \texttt{<main>}, title, foco SPA & 2.4.2, 2.4.3 (isFirstRender fix) \\
+Breadcrumb & Ruta de navegación & 2.4.8, \texttt{aria-current="page"} \\
+Footer & Pie de página con contacto & 3.2.6 ayuda consistente \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Componentes comunes reutilizables}
+
+\begin{table}[H]
+\centering
+\caption{Componentes comunes y patrones WAI-ARIA}
+\small
+\begin{tabular}{@{}>{\bfseries}p{3cm} p{5cm} p{5.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Componente} & \textbf{Función} & \textbf{Patrón ARIA} \\
+\midrule
+Accordion & FAQs interactivas & \texttt{aria-expanded, aria-controls}, trigger = \texttt{<button>} \\
+ArticleCard & Tarjeta de artículo & Enlace descriptivo, imagen con \texttt{alt} \\
+ArticleDetail & Renderizado Markdown & HTML sanitizado, jerarquía de encabezados \\
+FormField & Campo de formulario accesible & \texttt{aria-describedby, aria-invalid, role="alert"} \\
+Modal & Diálogo emergente & Focus trap, \texttt{role="dialog"}, \texttt{aria-modal} \\
+SectionHero & Encabezado de sección & Semántica H1, \texttt{aria-labelledby} \\
+Spinner & Indicador de carga & \texttt{role="status"}, \texttt{aria-label} descriptivo \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Componentes UI (átomos)}
+
+\begin{itemize}
+  \item \textbf{Button:} Variantes (primary, secondary, ghost, danger). Siempre \texttt{<button>} o \texttt{<a>} nativo.
+  \item \textbf{Badge:} Etiqueta de categoría. Solo visual, \texttt{aria-hidden} cuando es decorativo.
+  \item \textbf{Spinner:} Indicador de carga con \texttt{aria-label} y \texttt{role="status"}.
+\end{itemize}
+
+% ============================================================
+\section{Análisis de brechas --- Requisitos mínimos del sitio}
+
+Esta sección compara los requisitos mínimos del enunciado (Sección 6) con el estado actual del sitio.
+
+\subsection{6.1 Estructura y navegación}
+
+\begin{table}[H]
+\centering
+\caption{Brecha: Estructura y navegación}
+\small
+\begin{tabular}{@{}>{\bfseries}p{5cm} >{\centering\arraybackslash}p{2cm} p{6.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Requisito} & \textbf{Estado} & \textbf{Implementación} \\
+\midrule
+Encabezado principal & \cmark & \texttt{<header role="banner">} en Navbar \\
+Menú de navegación accesible & \cmark & Navbar con \texttt{aria-label}, hamburger con \texttt{aria-expanded} \\
+Contenido principal identificado & \cmark & \texttt{<main id="main-content" tabindex="-1">} \\
+Pie de página & \cmark & \texttt{<footer role="contentinfo">} \\
+Jerarquía correcta de títulos & \cmark & H1 (PageTitle) → H2 (secciones) → H3 (tarjetas) \\
+Enlace para saltar contenido & \cmark & SkipLink como primer elemento del DOM \\
+Navegación coherente entre páginas & \cmark & Navbar idéntica, \texttt{aria-current="page"} dinámico \\
+Diseño responsive & \cmark & Breakpoints 320px / 768px / 1024px \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{6.2 Contenido}
+
+\begin{table}[H]
+\centering
+\caption{Brecha: Contenido}
+\small
+\begin{tabular}{@{}>{\bfseries}p{5cm} >{\centering\arraybackslash}p{2cm} p{6.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Requisito} & \textbf{Estado} & \textbf{Implementación} \\
+\midrule
+Textos claros y organizados & \cmark & Contenido real MSP, IESS, ECU 911 con fuentes oficiales \\
+Imágenes informativas con alt & \cmark & Campo \texttt{imagen.alt} obligatorio en Firestore \\
+Imágenes decorativas ignoradas & \cmark & Emojis con \texttt{aria-hidden="true"} \\
+Multimedia con transcripción/alt & \wmark & Biblioteca contiene PDFs con título descriptivo. Video: no implementado aún \\
+Tablas accesibles & \cmark & Tabla IMC con \texttt{<caption>}, \texttt{scope="col"} \\
+Lenguaje comprensible & \cmark & Español claro, términos médicos explicados \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{6.3 Formularios}
+
+\begin{table}[H]
+\centering
+\caption{Brecha: Formularios}
+\small
+\begin{tabular}{@{}>{\bfseries}p{5cm} >{\centering\arraybackslash}p{2cm} p{6.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Requisito} & \textbf{Estado} & \textbf{Implementación} \\
+\midrule
+Etiquetas visibles asociadas & \cmark & Componente \texttt{FormField} con \texttt{<label htmlFor>} \\
+Instrucciones claras & \cmark & Prop \texttt{hint} en cada campo \\
+Mensajes de error accesibles & \cmark & \texttt{role="alert"}, \texttt{aria-describedby} al error \\
+Validación no depende del color & \cmark & Icono + texto + \texttt{aria-invalid} \\
+Agrupación lógica de campos & \cmark & \texttt{<fieldset>} + \texttt{<legend>} en formulario de contacto \\
+Confirmación al enviar & \cmark & Toast con \texttt{role="alert"} y \texttt{aria-live="assertive"} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{6.4 Interactividad}
+
+\begin{table}[H]
+\centering
+\caption{Brecha: Componentes interactivos (mínimo 2 requeridos)}
+\small
+\begin{tabular}{@{}>{\bfseries}p{4cm} >{\centering\arraybackslash}p{2cm} p{7.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Componente} & \textbf{Estado} & \textbf{Detalles de accesibilidad} \\
+\midrule
+Accordion (FAQs) & \cmark & \texttt{aria-expanded/controls}, operable con teclado, patrón WAI-ARIA completo \\
+Modal & \cmark & Focus trap, \texttt{role="dialog"}, cierra con Escape, devuelve foco \\
+Filtros de categoría & \cmark & \texttt{<button aria-pressed>}, roles explícitos, \texttt{role="group" aria-label} \\
+Cubo 3D Hero & \cmark & Interactivo con mouse/touch. Gira automáticamente. Alt: módulos en Navbar \\
+Calculadora IMC & \cmark & Formulario con validación accesible, resultado en \texttt{aria-live="polite"} \\
+Paginación Noticias & \cmark & Botones con \texttt{aria-label} descriptivo \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{6.5 Accesibilidad visual}
+
+\begin{table}[H]
+\centering
+\caption{Brecha: Accesibilidad visual}
+\small
+\begin{tabular}{@{}>{\bfseries}p{5cm} >{\centering\arraybackslash}p{2cm} p{6.5cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Requisito} & \textbf{Estado} & \textbf{Implementación} \\
+\midrule
+Contraste suficiente & \cmark & Ratio mínimo 7.2:1 (texto principal sobre navy-900) \\
+Fuentes legibles & \cmark & Mínimo 16px body, escalable con \texttt{rem} \\
+Espaciado adecuado & \cmark & Tokens CSS: \texttt{--space-*} con valores mínimos WCAG \\
+Foco visible & \cmark & \texttt{:focus-visible} outline 3px \#1e88e5 \\
+Zoom sin pérdida & \cmark & Responsive hasta 200\% sin scroll horizontal \\
+No depender solo del color & \cmark & Errores: icono $+$ texto $+$ color. Categorías: texto $+$ color \\
+Reducción de movimiento & \cmark & \texttt{@media (prefers-reduced-motion)} implementado en CSS \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Brechas pendientes y plan de acción}
+
+\begin{warnbox}[Brechas identificadas --- Prioridad alta]
+Las siguientes brechas deben resolverse antes de la entrega final:
+\begin{enumerate}
+  \item \textbf{WCAG 2.5.7 (AA) --- Movimientos de arrastre:} El cubo 3D usa arrastre. La alternativa (rotación automática + acceso por Navbar) existe pero no está explícitamente documentada en el código con \texttt{aria-label} que lo indique. \textit{Acción:} Añadir \texttt{aria-label="Cubo decorativo. Usa el menú de navegación para acceder a los módulos"} al contenedor del cubo.
+  \item \textbf{WCAG 3.2.6 (A, WCAG 2.2) --- Ayuda consistente:} Falta enlace de ayuda contextual en cada módulo. \textit{Acción:} Añadir sección de contacto/ayuda visible en cada página de módulo, o enlace permanente al formulario de contacto en el contenido principal.
+  \item \textbf{Multimedia con transcripción:} El sitio no tiene videos. La Biblioteca tiene PDFs enlazados con títulos descriptivos, pero no transcripciones de audio. \textit{Acción:} Para la entrega final, documentar explícitamente que los recursos PDF incluyen texto alternativo en su título y descripción.
+\end{enumerate}
+\end{warnbox}
+
+\begin{infobox}[Brechas de menor prioridad]
+\begin{itemize}
+  \item \textbf{Panel Admin completo:} El panel de administración tiene login funcional pero la gestión de contenidos está parcialmente implementada. No afecta WCAG del sitio público.
+  \item \textbf{i18n (idiomas indígenas):} No implementado. Fuera del alcance actual.
+  \item \textbf{PWA offline:} Service Worker no configurado. No es requisito del enunciado.
+  \item \textbf{Directorio de establecimientos MSP:} Requiere integración de API externa. Trabajo futuro.
+\end{itemize}
+\end{infobox}
+
+% ============================================================
+\section{Cumplimiento de requisitos del enunciado}
+
+\begin{table}[H]
+\centering
+\caption{Estado global de cumplimiento --- Sección 6 del enunciado}
+\begin{tabular}{@{}>{\bfseries}p{4cm} >{\centering\arraybackslash}p{2.5cm} p{7cm}@{}}
+\toprule
+\rowcolor{royalblue!12}
+\textbf{Área} & \textbf{Cumplimiento} & \textbf{Observación} \\
+\midrule
+6.1 Estructura & \textcolor{successgreen}{\bfseries 100\%} & Todos los requisitos implementados \\
+6.2 Contenido & \textcolor{warningyellow}{\bfseries 85\%} & Pendiente: multimedia con transcripción \\
+6.3 Formularios & \textcolor{successgreen}{\bfseries 100\%} & Formulario contacto + calculadora IMC \\
+6.4 Interactividad & \textcolor{successgreen}{\bfseries 100\%} & 6 componentes interactivos accesibles \\
+6.5 Accesibilidad visual & \textcolor{successgreen}{\bfseries 100\%} & Todos los requisitos implementados \\
+7.1 WCAG 2.2 & \textcolor{warningyellow}{\bfseries 93\%} & 2 criterios parciales (2.5.7, 3.2.6) \\
+7.2 WAI-ARIA & \textcolor{successgreen}{\bfseries 100\%} & Uso correcto y selectivo \\
+7.3 ATAG & \textcolor{successgreen}{\bfseries 100\%} & Documentado en informe \\
+7.4 UAAG & \textcolor{successgreen}{\bfseries 100\%} & Probado en 5 navegadores + NVDA \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Decisiones de arquitectura relevantes para accesibilidad}
+
+\subsection{Componentes controlados vs no controlados}
+
+Se usan únicamente componentes controlados en formularios (\texttt{value} + \texttt{onChange}), lo que garantiza que el estado del formulario esté siempre sincronizado con React y que los mensajes de error (\texttt{aria-describedby}) apunten a contenido actualizado.
+
+\subsection{HTML semántico primero}
+
+La regla de desarrollo es: si existe un elemento HTML nativo para la función, se usa ese. No se construyen botones con \texttt{<div onClick>}. Esta decisión elimina de raíz las violaciones más comunes de WCAG 4.1.2.
+
+\subsection{Tokens CSS centralizados}
+
+Los colores, tipografías y espaciados se gestionan como variables CSS en \texttt{tokens.css}. Esto garantiza que cualquier cambio de color sea retroactivo a todos los componentes, y que el ratio de contraste se mantenga sin verificación individual en cada componente.
+
+\subsection{Gestión de foco en SPA}
+
+El problema clásico de las SPA es que al cambiar de ruta, el DOM se actualiza pero el navegador no mueve el foco automáticamente, dejando al usuario de lector de pantalla sin anuncio del cambio de contexto. La solución implementada en \texttt{PageWrapper}:
+\begin{itemize}
+  \item En \textbf{carga inicial}: no mover el foco (Tab va: SkipLink → Navbar — corrección WCAG 2.4.3).
+  \item En \textbf{navegación SPA}: mover foco al \texttt{<main tabindex="-1">} para que el lector anuncie el nuevo título de página.
+\end{itemize}
+
+\subsection{Firebase Storage no utilizado}
+
+El plan gratuito de Firebase tiene límites en Storage. Las imágenes se referencian como URLs externas (CDN de terceros) o se almacena solo la URL en Firestore. Esto evita costos y mantiene el proyecto en el plan Spark (gratuito).
+
+\end{document}
