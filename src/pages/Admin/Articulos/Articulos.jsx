@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Button from '@components/ui/Button/Button'
 import Badge from '@components/ui/Badge/Badge'
 import Spinner from '@components/ui/Spinner/Spinner'
 import Modal from '@components/common/Modal/Modal'
 import FormField from '@components/common/FormField/FormField'
+import { useToast } from '@contexts/ToastContext'
 import { getArticulosByModulo, crearArticulo, actualizarArticulo, eliminarArticulo } from '@services/articulos.service'
 import { MODULOS_LIST as MODULOS } from '@config/constants'
 import './Articulos.css'
@@ -11,6 +12,7 @@ import './Articulos.css'
 const FORM_INICIAL = { titulo: '', modulo: 'nutricion', categoria: '', resumen: '', contenido: '', slug: '' }
 
 export default function AdminArticulos() {
+  const toast = useToast()
   const [articulos, setArticulos] = useState([])
   const [moduloActivo, setModuloActivo] = useState('nutricion')
   const [loading, setLoading] = useState(true)
@@ -56,20 +58,29 @@ export default function AdminArticulos() {
     try {
       if (editando) {
         await actualizarArticulo(editando.id, form)
+        toast.success('Artículo actualizado correctamente.')
       } else {
         await crearArticulo({ ...form, publicado: true })
+        toast.success('Artículo publicado correctamente.')
       }
       setModal(false)
       cargar()
+    } catch {
+      toast.error('Ocurrió un error al guardar el artículo.')
     } finally {
       setSaving(false)
     }
   }
 
   const eliminar = async (id) => {
-    if (!window.confirm('¿Eliminar este artículo?')) return
-    await eliminarArticulo(id)
-    setArticulos((p) => p.filter((a) => a.id !== id))
+    if (!window.confirm('¿Eliminar este artículo? Esta acción no se puede deshacer.')) return
+    try {
+      await eliminarArticulo(id)
+      setArticulos((p) => p.filter((a) => a.id !== id))
+      toast.success('Artículo eliminado.')
+    } catch {
+      toast.error('Error al eliminar el artículo.')
+    }
   }
 
   const slugificar = (txt) => txt.toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')

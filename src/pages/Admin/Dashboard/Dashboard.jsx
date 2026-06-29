@@ -1,15 +1,44 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { collection, getCountFromServer } from 'firebase/firestore'
+import { db } from '@config/firebase'
 import StatisticCard from '@components/common/StatisticCard/StatisticCard'
+import Spinner from '@components/ui/Spinner/Spinner'
 import './Dashboard.css'
 
 const ACCIONES = [
   { to: '/admin/articulos', icon: '📝', label: 'Gestionar artículos', desc: 'Crear, editar y publicar contenido editorial de cada módulo.' },
+  { to: '/admin/noticias', icon: '📰', label: 'Gestionar noticias', desc: 'Publicar y administrar las noticias de salud de la plataforma.' },
   { to: '/admin/mensajes', icon: '✉️', label: 'Ver mensajes', desc: 'Lee y responde los mensajes recibidos desde el formulario de contacto.' },
 ]
 
 export default function AdminDashboard() {
-  const [stats] = useState({ articulos: 0, noticias: 0, mensajes: 0 })
+  const [stats, setStats] = useState(null)
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const [artRef, notRef, msgRef] = [
+          collection(db, 'articulos'),
+          collection(db, 'noticias'),
+          collection(db, 'mensajes'),
+        ]
+        const [art, not, msg] = await Promise.all([
+          getCountFromServer(artRef),
+          getCountFromServer(notRef),
+          getCountFromServer(msgRef),
+        ])
+        setStats({
+          articulos: art.data().count,
+          noticias: not.data().count,
+          mensajes: msg.data().count,
+        })
+      } catch {
+        setStats({ articulos: 0, noticias: 0, mensajes: 0 })
+      }
+    }
+    fetchCounts()
+  }, [])
 
   return (
     <div className="dashboard-page">
@@ -20,11 +49,17 @@ export default function AdminDashboard() {
 
       <section aria-labelledby="stats-dash-title">
         <h2 id="stats-dash-title" className="dashboard-section-title">Estadísticas</h2>
-        <div className="dashboard-stats">
-          <StatisticCard value={stats.articulos} label="Artículos publicados" variant="blue" />
-          <StatisticCard value={stats.noticias} label="Noticias publicadas" variant="teal" />
-          <StatisticCard value={stats.mensajes} label="Mensajes recibidos" variant="purple" />
-        </div>
+        {stats ? (
+          <div className="dashboard-stats">
+            <StatisticCard value={stats.articulos} label="Artículos totales" variant="blue" />
+            <StatisticCard value={stats.noticias} label="Noticias totales" variant="teal" />
+            <StatisticCard value={stats.mensajes} label="Mensajes recibidos" variant="purple" />
+          </div>
+        ) : (
+          <div style={{ padding: 'var(--space-8)' }}>
+            <Spinner size="md" label="Cargando estadísticas…" />
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="acciones-title">
