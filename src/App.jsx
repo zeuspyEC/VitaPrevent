@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import SkipLink from '@components/layout/SkipLink/SkipLink'
 import Navbar from '@components/layout/Navbar/Navbar'
 import Footer from '@components/layout/Footer/Footer'
@@ -30,6 +30,12 @@ const AdminNoticias     = lazy(() => import('@pages/Admin/Noticias/Noticias'))
 const AdminRecursos     = lazy(() => import('@pages/Admin/Recursos/Recursos'))
 const NoticiasDetalle   = lazy(() => import('@pages/NoticiasDetalle/NoticiasDetalle'))
 const Accesibilidad     = lazy(() => import('@pages/Accesibilidad/Accesibilidad'))
+
+// Redirige /viejo-modulo/:slug → /nuevo-modulo/:slug
+function SlugRedirect({ to }) {
+  const { slug } = useParams()
+  return <Navigate to={`${to}/${slug}`} replace />
+}
 
 function PageLoader() {
   return (
@@ -76,6 +82,8 @@ export default function App() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/"                       element={<Home />} />
+
+                  {/* ── Módulos actuales ── */}
                   <Route path={ROUTES.NUTRICION}        element={<Nutricion />} />
                   <Route path="/atencion-primaria/:slug" element={<Nutricion />} />
                   <Route path={ROUTES.ACTIVIDAD_FISICA} element={<ActividadFisica />} />
@@ -84,6 +92,14 @@ export default function App() {
                   <Route path="/salud-mental/:slug"     element={<SaludMental />} />
                   <Route path={ROUTES.PREVENCION}       element={<Prevencion />} />
                   <Route path="/emergencias/:slug"      element={<Prevencion />} />
+
+                  {/* ── Redirects de rutas antiguas → nuevas (301 equivalente) ── */}
+                  <Route path="/nutricion"              element={<Navigate to="/atencion-primaria" replace />} />
+                  <Route path="/nutricion/:slug"        element={<SlugRedirect to="/atencion-primaria" />} />
+                  <Route path="/actividad-fisica"       element={<Navigate to="/vacunacion" replace />} />
+                  <Route path="/actividad-fisica/:slug" element={<SlugRedirect to="/vacunacion" />} />
+                  <Route path="/prevencion"             element={<Navigate to="/emergencias" replace />} />
+                  <Route path="/prevencion/:slug"       element={<SlugRedirect to="/emergencias" />} />
                   <Route path={ROUTES.BIBLIOTECA}       element={<Biblioteca />} />
                   <Route path={ROUTES.NOTICIAS}         element={<Noticias />} />
                   <Route path="/noticias/:id"           element={<NoticiasDetalle />} />
