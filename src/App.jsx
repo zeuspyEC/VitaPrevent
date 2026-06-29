@@ -25,7 +25,8 @@ const AdminLogin      = lazy(() => import('@pages/Admin/Login/Login'))
 const AdminDashboard  = lazy(() => import('@pages/Admin/Dashboard/Dashboard'))
 const AdminArticulos  = lazy(() => import('@pages/Admin/Articulos/Articulos'))
 const AdminMensajes   = lazy(() => import('@pages/Admin/Mensajes/Mensajes'))
-const AdminNoticias   = lazy(() => import('@pages/Admin/Noticias/Noticias'))
+const AdminNoticias     = lazy(() => import('@pages/Admin/Noticias/Noticias'))
+const NoticiasDetalle   = lazy(() => import('@pages/NoticiasDetalle/NoticiasDetalle'))
 
 function PageLoader() {
   return (
@@ -81,7 +82,7 @@ export default function App() {
                   <Route path="/prevencion/:slug"       element={<Prevencion />} />
                   <Route path={ROUTES.BIBLIOTECA}       element={<Biblioteca />} />
                   <Route path={ROUTES.NOTICIAS}         element={<Noticias />} />
-                  <Route path="/noticias/:id"           element={<Noticias />} />
+                  <Route path="/noticias/:id"           element={<NoticiasDetalle />} />
                   <Route path={ROUTES.CONTACTO}         element={<Contacto />} />
                   <Route path={ROUTES.NOSOTROS}         element={<Nosotros />} />
                   <Route path="*"                       element={<NotFound />} />
