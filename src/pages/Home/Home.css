@@ -512,53 +512,31 @@
   /* Sin animation CSS ni filter — ambos rompen preserve-3d */
 }
 
-/* ── Caras del cubo ── */
+/* ── Panel de vidrio — visible desde ambos lados ── */
 .hero-cube__face {
   position: absolute;
   width: var(--cube);
   height: var(--cube);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  background: var(--face-bg, rgba(21, 101, 192, 0.2));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backface-visibility: hidden;
-  text-decoration: none;
-  padding: var(--space-5);
-  text-align: center;
-  cursor: pointer;
-  transition: filter 0.25s, border-color 0.25s;
-  overflow: hidden;
+  background: var(--face-bg, rgba(21, 101, 192, 0.10));
+  border: 1.5px solid var(--face-glow, rgba(144, 202, 249, 0.45));
+  backface-visibility: visible;   /* ver el interior del cubo al girar */
+  transform-style: preserve-3d;   /* permite que el hijo tenga su propio backface */
+  box-shadow:
+    0 0 22px var(--face-glow),
+    0 0 60px color-mix(in srgb, var(--face-glow) 30%, transparent),
+    inset 0 0 30px rgba(255, 255, 255, 0.03);
 }
 
-/* Reflejo en la cara */
+/* Reflejo diagonal en la cara — siempre visible */
 .hero-cube__face::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 45%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 55%);
   pointer-events: none;
 }
 
-/* Borde luminoso en la cara */
-.hero-cube__face::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--face-glow, rgba(144,202,249,0.3));
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-
-.hero-cube__face:hover::after { opacity: 1; }
-.hero-cube__face:hover { filter: brightness(1.35); }
-
-/* Posición de cada cara (cubo 240px → halfSize 120px) */
+/* Posición de cada cara */
 .hero-cube__face--front  { transform: translateZ(var(--cube-half)); }
 .hero-cube__face--back   { transform: rotateY(180deg) translateZ(var(--cube-half)); }
 .hero-cube__face--right  { transform: rotateY(90deg)  translateZ(var(--cube-half)); }
@@ -566,29 +544,43 @@
 .hero-cube__face--top    { transform: rotateX(90deg)  translateZ(var(--cube-half)); }
 .hero-cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--cube-half)); }
 
-/* ── Contenido de las caras ── */
+/* ── Contenido — sólo visible desde el frente ── */
+.hero-cube__face-front {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  text-align: center;
+  text-decoration: none;
+  backface-visibility: hidden;    /* se oculta cuando miramos la cara por detrás */
+}
+
 .hero-cube__face-icon {
   font-size: 3rem;
   line-height: 1;
   display: block;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
 }
 
 .hero-cube__face-title {
   display: block;
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: var(--font-bold);
   color: #fff;
-  line-height: 1.2;
+  line-height: 1.25;
   letter-spacing: -0.01em;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 0 12px var(--face-glow), 0 1px 4px rgba(0,0,0,0.6);
 }
 
 .hero-cube__face-sub {
   display: block;
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.65);
-  letter-spacing: 0.03em;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 8px var(--face-glow);
 }
 
 /* ── Hint debajo del cubo ── */
@@ -602,6 +594,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-cube__scene { animation: none; }
-  .hero-cube__face:hover { filter: none; }
+  /* La rotación la controla JS vía rAF — no hay animation CSS que parar aquí */
+  .hero-cube { pointer-events: none; }
 }

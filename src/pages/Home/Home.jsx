@@ -8,10 +8,10 @@ import { getNoticias } from '@services/noticias.service'
 import './Home.css'
 
 const CUBE_MODS = [
-  { pos: 'front',  icon: '🥗', title: 'Nutrición',       sub: 'Alimentación saludable',  path: ROUTES.NUTRICION,        bg: 'rgba(22,163,74,0.22)',   glow: '#22c55e' },
-  { pos: 'right',  icon: '🏃', title: 'Actividad Física', sub: 'Rutinas y ejercicio',     path: ROUTES.ACTIVIDAD_FISICA, bg: 'rgba(234,88,12,0.22)',   glow: '#f97316' },
-  { pos: 'back',   icon: '🧠', title: 'Salud Mental',     sub: 'Bienestar emocional',     path: ROUTES.SALUD_MENTAL,    bg: 'rgba(147,51,234,0.22)',  glow: '#a855f7' },
-  { pos: 'left',   icon: '🛡️', title: 'Prevención',       sub: 'Cuida tu salud',          path: ROUTES.PREVENCION,      bg: 'rgba(21,101,192,0.22)',  glow: '#60a5fa' },
+  { pos: 'front',  icon: '🥗', title: 'Nutrición',       sub: 'Alimentación saludable', path: ROUTES.NUTRICION,        bg: 'rgba(22,163,74,0.10)',  glow: '#4ade80' },
+  { pos: 'right',  icon: '🏃', title: 'Actividad Física', sub: 'Rutinas y ejercicio',    path: ROUTES.ACTIVIDAD_FISICA, bg: 'rgba(234,88,12,0.10)',  glow: '#fb923c' },
+  { pos: 'back',   icon: '🧠', title: 'Salud Mental',     sub: 'Bienestar emocional',    path: ROUTES.SALUD_MENTAL,    bg: 'rgba(147,51,234,0.10)', glow: '#c084fc' },
+  { pos: 'left',   icon: '🛡️', title: 'Prevención',       sub: 'Cuida tu salud',         path: ROUTES.PREVENCION,      bg: 'rgba(21,101,192,0.10)', glow: '#60a5fa' },
 ]
 
 function HeroCube({ noticias }) {
@@ -55,12 +55,12 @@ function HeroCube({ noticias }) {
   const onClickCapture = (e) => { if (drag.current.moved) e.stopPropagation() }
 
   const topFace = noticias[0]
-    ? { pos: 'top',    icon: '📰', title: noticias[0].titulo?.slice(0, 26) + (noticias[0].titulo?.length > 26 ? '…' : ''), sub: 'Última noticia',   path: `/noticias/${noticias[0].id}`, bg: 'rgba(8,145,178,0.22)', glow: '#22d3ee' }
-    : { pos: 'top',    icon: '📋', title: 'Noticias',   sub: 'Actualidad en salud', path: ROUTES.NOTICIAS,    bg: 'rgba(8,145,178,0.22)', glow: '#22d3ee' }
+    ? { pos: 'top',    icon: '📰', title: noticias[0].titulo?.slice(0, 24) + (noticias[0].titulo?.length > 24 ? '…' : ''), sub: 'Última noticia',   path: `/noticias/${noticias[0].id}`, bg: 'rgba(8,145,178,0.10)', glow: '#22d3ee' }
+    : { pos: 'top',    icon: '📋', title: 'Noticias',   sub: 'Actualidad en salud', path: ROUTES.NOTICIAS,    bg: 'rgba(8,145,178,0.10)', glow: '#22d3ee' }
 
   const bottomFace = noticias[1]
-    ? { pos: 'bottom', icon: '🔔', title: noticias[1].titulo?.slice(0, 26) + (noticias[1].titulo?.length > 26 ? '…' : ''), sub: 'Noticia reciente', path: `/noticias/${noticias[1].id}`, bg: 'rgba(8,145,178,0.22)', glow: '#22d3ee' }
-    : { pos: 'bottom', icon: '📚', title: 'Biblioteca', sub: 'Recursos digitales',  path: ROUTES.BIBLIOTECA,  bg: 'rgba(8,145,178,0.22)', glow: '#22d3ee' }
+    ? { pos: 'bottom', icon: '🔔', title: noticias[1].titulo?.slice(0, 24) + (noticias[1].titulo?.length > 24 ? '…' : ''), sub: 'Noticia reciente', path: `/noticias/${noticias[1].id}`, bg: 'rgba(8,145,178,0.10)', glow: '#22d3ee' }
+    : { pos: 'bottom', icon: '📚', title: 'Biblioteca', sub: 'Recursos digitales',  path: ROUTES.BIBLIOTECA,  bg: 'rgba(8,145,178,0.10)', glow: '#22d3ee' }
 
   const faces = [...CUBE_MODS, topFace, bottomFace]
 
@@ -75,17 +75,19 @@ function HeroCube({ noticias }) {
     >
       <div className="hero-cube__scene" ref={sceneRef}>
         {faces.map((f) => (
-          <Link
+          /* div exterior: panel de vidrio visible por ambos lados */
+          <div
             key={f.pos}
-            to={f.path}
-            tabIndex="-1"
             className={`hero-cube__face hero-cube__face--${f.pos}`}
             style={{ '--face-bg': f.bg, '--face-glow': f.glow }}
           >
-            <span className="hero-cube__face-icon" aria-hidden="true">{f.icon}</span>
-            <strong className="hero-cube__face-title">{f.title}</strong>
-            <span className="hero-cube__face-sub">{f.sub}</span>
-          </Link>
+            {/* Link interior: sólo visible desde el frente (backface-visibility:hidden en CSS) */}
+            <Link to={f.path} tabIndex="-1" className="hero-cube__face-front">
+              <span className="hero-cube__face-icon" aria-hidden="true">{f.icon}</span>
+              <strong className="hero-cube__face-title">{f.title}</strong>
+              <span className="hero-cube__face-sub">{f.sub}</span>
+            </Link>
+          </div>
         ))}
       </div>
       <p className="hero-cube__hint">Arrastra para rotar · clic en una cara para explorar</p>
