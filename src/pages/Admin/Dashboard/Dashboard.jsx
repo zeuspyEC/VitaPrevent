@@ -2,31 +2,64 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { collection, getCountFromServer } from 'firebase/firestore'
 import { db } from '@config/firebase'
-import StatisticCard from '@components/common/StatisticCard/StatisticCard'
 import Spinner from '@components/ui/Spinner/Spinner'
 import { ejecutarSeed } from '@services/seed.service'
 import './Dashboard.css'
 
-const ACCIONES = [
-  { to: '/admin/articulos', icon: '📝', label: 'Gestionar artículos', desc: 'Crear, editar y publicar contenido editorial de cada módulo.' },
-  { to: '/admin/noticias', icon: '📰', label: 'Gestionar noticias', desc: 'Publicar y administrar las noticias de salud de la plataforma.' },
-  { to: '/admin/mensajes', icon: '✉️', label: 'Ver mensajes', desc: 'Lee y responde los mensajes recibidos desde el formulario de contacto.' },
+const STATS_CONFIG = [
+  { key: 'articulos', label: 'Artículos', icon: '📝', color: 'blue', to: '/admin/articulos' },
+  { key: 'noticias',  label: 'Noticias',  icon: '📰', color: 'teal', to: '/admin/noticias' },
+  { key: 'recursos',  label: 'Recursos',  icon: '📚', color: 'violet', to: '/admin/recursos' },
+  { key: 'mensajes',  label: 'Mensajes',  icon: '✉️', color: 'amber', to: '/admin/mensajes' },
 ]
+
+const ACCIONES = [
+  { to: '/admin/articulos/nuevo', icon: '✏️', label: 'Nuevo artículo', desc: 'Redactar y publicar contenido para un módulo' },
+  { to: '/admin/noticias/nuevo',  icon: '📡', label: 'Nueva noticia',  desc: 'Agregar una noticia de salud pública' },
+  { to: '/admin/recursos/nuevo',  icon: '📎', label: 'Nuevo recurso',  desc: 'Subir PDF, video, podcast o infografía' },
+  { to: '/admin/mensajes',        icon: '✉️', label: 'Ver mensajes',   desc: 'Revisar consultas del formulario de contacto' },
+]
+
+const SEED_LABELS = {
+  idle:    '🌱 Cargar contenido de ejemplo',
+  running: 'Cargando…',
+  done:    '✔ Contenido cargado',
+  error:   '⚠ Error — reintentar',
+}
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
-  const [seedState, setSeedState] = useState('idle') // idle | running | done | error
+  const [seedState, setSeedState] = useState('idle')
   const [seedLog, setSeedLog] = useState([])
+  const [seedOpen, setSeedOpen] = useState(false)
   const logRef = useRef(null)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const refs = ['articulos', 'noticias', 'recursos', 'mensajes'].map((c) => collection(db, c))
+        const counts = await Promise.all(refs.map((r) => getCountFromServer(r)))
+        setStats({
+          articulos: counts[0].data().count,
+          noticias:  counts[1].data().count,
+          recursos:  counts[2].data().count,
+          mensajes:  counts[3].data().count,
+        })
+      } catch {
+        setStats({ articulos: 0, noticias: 0, recursos: 0, mensajes: 0 })
+      }
+    })()
+  }, [])
 
   const handleSeed = async () => {
     if (seedState === 'running') return
     setSeedState('running')
     setSeedLog([])
+    setSeedOpen(true)
     try {
       await ejecutarSeed((msg) => {
         setSeedLog((prev) => [...prev, msg])
-        setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 50)
+        setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 40)
       })
       setSeedState('done')
     } catch (e) {
@@ -35,109 +68,85 @@ export default function AdminDashboard() {
     }
   }
 
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const [artRef, notRef, msgRef] = [
-          collection(db, 'articulos'),
-          collection(db, 'noticias'),
-          collection(db, 'mensajes'),
-        ]
-        const [art, not, msg] = await Promise.all([
-          getCountFromServer(artRef),
-          getCountFromServer(notRef),
-          getCountFromServer(msgRef),
-        ])
-        setStats({
-          articulos: art.data().count,
-          noticias: not.data().count,
-          mensajes: msg.data().count,
-        })
-      } catch {
-        setStats({ articulos: 0, noticias: 0, mensajes: 0 })
-      }
-    }
-    fetchCounts()
-  }, [])
-
   return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
-        <h1 className="admin-header__title">Dashboard</h1>
-        <p className="admin-header__subtitle">Resumen del estado de la plataforma VitaPrevent</p>
+    <div className="dash">
+      {/* ── Header ── */}
+      <header className="dash__header">
+        <div>
+          <h1 className="dash__title">Dashboard</h1>
+          <p className="dash__subtitle">Panel de administración de VitaPrevent</p>
+        </div>
       </header>
 
-      <section aria-labelledby="stats-dash-title">
-        <h2 id="stats-dash-title" className="dashboard-section-title">Estadísticas</h2>
-        {stats ? (
-          <div className="dashboard-stats">
-            <StatisticCard value={stats.articulos} label="Artículos totales" variant="blue" />
-            <StatisticCard value={stats.noticias} label="Noticias totales" variant="teal" />
-            <StatisticCard value={stats.mensajes} label="Mensajes recibidos" variant="purple" />
-          </div>
-        ) : (
-          <div style={{ padding: 'var(--space-8)' }}>
-            <Spinner size="md" label="Cargando estadísticas…" />
-          </div>
-        )}
-      </section>
-
-      <section aria-labelledby="acciones-title">
-        <h2 id="acciones-title" className="dashboard-section-title">Acciones rápidas</h2>
-        <div className="dashboard-acciones">
-          {ACCIONES.map((a) => (
-            <Link key={a.to} to={a.to} className="dashboard-accion">
-              <span className="dashboard-accion__icon" aria-hidden="true">{a.icon}</span>
-              <div>
-                <strong className="dashboard-accion__label">{a.label}</strong>
-                <p className="dashboard-accion__desc">{a.desc}</p>
+      {/* ── Stats ── */}
+      <section aria-labelledby="dash-stats-h">
+        <h2 id="dash-stats-h" className="dash__section-label">Resumen</h2>
+        <div className="dash__stats">
+          {STATS_CONFIG.map(({ key, label, icon, color, to }) => (
+            <Link key={key} to={to} className={`dash__stat dash__stat--${color}`}>
+              <span className="dash__stat-icon" aria-hidden="true">{icon}</span>
+              <div className="dash__stat-body">
+                <span className="dash__stat-value">
+                  {stats ? stats[key] : <Spinner size="sm" label="" />}
+                </span>
+                <span className="dash__stat-label">{label}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section aria-labelledby="seed-title" className="seed-section">
-        <h2 id="seed-title" className="dashboard-section-title">Contenido de ejemplo</h2>
-        <div className="seed-card">
-          <div className="seed-card__header">
-            <span className="seed-card__icon" aria-hidden="true">🌱</span>
-            <div>
-              <strong className="seed-card__label">Cargar contenido inicial</strong>
-              <p className="seed-card__desc">
-                Inserta artículos, noticias y recursos de biblioteca con contenido real sobre servicios públicos de salud del Ecuador (MSP, IESS, ECU 911). Los documentos ya existentes se omiten automáticamente.
-              </p>
-            </div>
-          </div>
+      {/* ── Acciones rápidas ── */}
+      <section aria-labelledby="dash-actions-h">
+        <h2 id="dash-actions-h" className="dash__section-label">Acciones rápidas</h2>
+        <div className="dash__actions">
+          {ACCIONES.map((a) => (
+            <Link key={a.to} to={a.to} className="dash__action">
+              <span className="dash__action-icon" aria-hidden="true">{a.icon}</span>
+              <div>
+                <span className="dash__action-label">{a.label}</span>
+                <span className="dash__action-desc">{a.desc}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
+      {/* ── Seed ── */}
+      <section aria-labelledby="dash-seed-h" className="dash__seed-section">
+        <div className="dash__seed-bar">
+          <div className="dash__seed-meta">
+            <h2 id="dash-seed-h" className="dash__seed-title">Contenido inicial</h2>
+            <p className="dash__seed-hint">
+              Carga artículos, noticias y recursos de ejemplo con fuentes del MSP, IESS y ECU 911.
+              Los documentos ya existentes se omiten.
+            </p>
+          </div>
           <button
-            className={`seed-btn seed-btn--${seedState}`}
+            className={`dash__seed-btn dash__seed-btn--${seedState}`}
             onClick={handleSeed}
-            disabled={seedState === 'running'}
+            disabled={seedState === 'running' || seedState === 'done'}
             aria-busy={seedState === 'running'}
           >
             {seedState === 'running' && <Spinner size="sm" label="" />}
-            {seedState === 'idle' && 'Cargar contenido de ejemplo'}
-            {seedState === 'running' && 'Cargando…'}
-            {seedState === 'done' && 'Contenido cargado correctamente'}
-            {seedState === 'error' && 'Error — reintentar'}
+            {SEED_LABELS[seedState]}
           </button>
-
-          {seedLog.length > 0 && (
-            <div
-              ref={logRef}
-              className="seed-log"
-              role="log"
-              aria-label="Registro de carga de contenido"
-              aria-live="polite"
-              tabIndex={0}
-            >
-              {seedLog.map((line, i) => (
-                <p key={i} className="seed-log__line">{line}</p>
-              ))}
-            </div>
-          )}
         </div>
+
+        {seedOpen && seedLog.length > 0 && (
+          <div
+            ref={logRef}
+            className="dash__seed-log"
+            role="log"
+            aria-label="Registro de importación"
+            aria-live="polite"
+            tabIndex={0}
+          >
+            {seedLog.map((line, i) => (
+              <p key={i} className="dash__seed-log-line">{line}</p>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )

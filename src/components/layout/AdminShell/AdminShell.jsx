@@ -21,7 +21,9 @@ export default function AdminShell() {
 
   return (
     <div className="admin-shell">
-      <a href="#admin-content" className="skip-link">Saltar al contenido</a>
+      <div className="skip-links">
+        <a href="#admin-content" className="skip-link">Saltar al contenido</a>
+      </div>
 
       <aside className="admin-sidebar" aria-label="Panel de administración">
         <Link to="/admin" className="admin-sidebar__brand" aria-label="VitaPrevent Admin — ir al dashboard">
