@@ -5,6 +5,20 @@ import {
 import { db } from '@config/firebase'
 import { PAGINATION_LIMIT } from '@config/constants'
 
+// Normaliza campos planos imagenUrl/imagenAlt a la forma {imagen:{url,alt}} que espera ArticleCard
+function mapArticulo(d) {
+  const data = d.data()
+  return {
+    id: d.id,
+    ...data,
+    imagen: data.imagen?.url
+      ? data.imagen
+      : data.imagenUrl
+        ? { url: data.imagenUrl, alt: data.imagenAlt || data.titulo || '' }
+        : null,
+  }
+}
+
 export async function getArticulosByModulo(modulo, categoria = null) {
   const constraints = [
     where('modulo', '==', modulo),
@@ -17,7 +31,7 @@ export async function getArticulosByModulo(modulo, categoria = null) {
   const seen = new Set()
   return snap.docs
     .filter((d) => { if (seen.has(d.id)) return false; seen.add(d.id); return true })
-    .map((d) => ({ id: d.id, ...d.data() }))
+    .map(mapArticulo)
 }
 
 export async function getArticuloBySlug(slug) {
@@ -25,7 +39,7 @@ export async function getArticuloBySlug(slug) {
     query(collection(db, 'articulos'), where('slug', '==', slug), where('publicado', '==', true), limit(1))
   )
   if (snap.empty) return null
-  return { id: snap.docs[0].id, ...snap.docs[0].data() }
+  return mapArticulo(snap.docs[0])
 }
 
 export async function crearArticulo(data) {

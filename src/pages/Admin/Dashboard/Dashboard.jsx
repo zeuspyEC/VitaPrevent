@@ -4,6 +4,7 @@ import { collection, getCountFromServer } from 'firebase/firestore'
 import { db } from '@config/firebase'
 import Spinner from '@components/ui/Spinner/Spinner'
 import { ejecutarSeed } from '@services/seed.service'
+import { ejecutarCleanup } from '@services/cleanup.service'
 import './Dashboard.css'
 
 const STATS_CONFIG = [
@@ -32,7 +33,11 @@ export default function AdminDashboard() {
   const [seedState, setSeedState] = useState('idle')
   const [seedLog, setSeedLog] = useState([])
   const [seedOpen, setSeedOpen] = useState(false)
+  const [cleanState, setCleanState] = useState('idle')
+  const [cleanLog, setCleanLog] = useState([])
+  const [cleanOpen, setCleanOpen] = useState(false)
   const logRef = useRef(null)
+  const cleanLogRef = useRef(null)
 
   useEffect(() => {
     ;(async () => {
@@ -50,6 +55,23 @@ export default function AdminDashboard() {
       }
     })()
   }, [])
+
+  const handleClean = async () => {
+    if (cleanState === 'running') return
+    setCleanState('running')
+    setCleanLog([])
+    setCleanOpen(true)
+    try {
+      await ejecutarCleanup((msg) => {
+        setCleanLog((prev) => [...prev, msg])
+        setTimeout(() => cleanLogRef.current?.scrollTo(0, cleanLogRef.current.scrollHeight), 40)
+      })
+      setCleanState('done')
+    } catch (e) {
+      setCleanLog((prev) => [...prev, `Error: ${e.message}`])
+      setCleanState('error')
+    }
+  }
 
   const handleSeed = async () => {
     if (seedState === 'running') return
@@ -110,6 +132,32 @@ export default function AdminDashboard() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* ── Cleanup ── */}
+      <section aria-labelledby="dash-clean-h" className="dash__seed-section">
+        <div className="dash__seed-bar">
+          <div className="dash__seed-meta">
+            <h2 id="dash-clean-h" className="dash__seed-title">Limpiar y corregir contenido</h2>
+            <p className="dash__seed-hint">
+              Elimina artículos duplicados, añade imágenes a los que no tienen y genera slugs en noticias sin URL. Seguro de re-ejecutar.
+            </p>
+          </div>
+          <button
+            className={`dash__seed-btn dash__seed-btn--${cleanState}`}
+            onClick={handleClean}
+            disabled={cleanState === 'running' || cleanState === 'done'}
+            aria-busy={cleanState === 'running'}
+          >
+            {cleanState === 'running' && <Spinner size="sm" label="" />}
+            {{ idle: '🧹 Limpiar contenido', running: 'Limpiando…', done: '✔ Limpieza completada', error: '⚠ Error — reintentar' }[cleanState]}
+          </button>
+        </div>
+        {cleanOpen && cleanLog.length > 0 && (
+          <div ref={cleanLogRef} className="dash__seed-log" role="log" aria-label="Registro de limpieza" aria-live="polite" tabIndex={0}>
+            {cleanLog.map((line, i) => <p key={i} className="dash__seed-log-line">{line}</p>)}
+          </div>
+        )}
       </section>
 
       {/* ── Seed ── */}
