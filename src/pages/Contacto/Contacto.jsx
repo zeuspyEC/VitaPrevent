@@ -70,7 +70,7 @@ export default function Contacto() {
   return (
     <PageWrapper
       title="Contacto"
-      description="Envíanos tus consultas sobre salud preventiva. Te responderemos lo antes posible."
+      description="Contáctanos con tus dudas sobre los servicios públicos de salud en Ecuador. Te responderemos lo antes posible."
     >
       <div className="contact-page container">
         <Breadcrumb />
@@ -79,7 +79,7 @@ export default function Contacto() {
           <span className="section__tag">Contáctanos</span>
           <h1 className="contact-page__title">¿En qué podemos ayudarte?</h1>
           <p className="contact-page__subtitle">
-            Escríbenos tus consultas sobre salud preventiva y te responderemos a la brevedad.
+            Escríbenos tus consultas sobre los servicios públicos de salud del Ecuador y te responderemos a la brevedad.
           </p>
         </header>
 

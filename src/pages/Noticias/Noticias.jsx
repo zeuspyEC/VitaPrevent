@@ -49,11 +49,11 @@ export default function Noticias() {
   const [primero, ...resto] = noticias
 
   return (
-    <PageWrapper title="Noticias de Salud" description="Últimas noticias, investigaciones y actualizaciones sobre salud preventiva y bienestar.">
+    <PageWrapper title="Noticias de Salud" description="Últimas noticias y actualizaciones oficiales sobre servicios públicos de salud en Ecuador: MSP, IESS, ECU 911 y OPS.">
       <SectionHero
         tag="Actualidad en salud"
         title="Noticias de salud"
-        description="Mantente informado con las últimas investigaciones, recomendaciones oficiales y novedades en salud preventiva y bienestar."
+        description="Mantente informado con las últimas actualizaciones, campañas y comunicados oficiales del MSP, IESS y organismos de salud pública del Ecuador."
         icon="📰"
         gradient="blue"
       />

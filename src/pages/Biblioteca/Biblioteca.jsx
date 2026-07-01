@@ -58,7 +58,7 @@ export default function Biblioteca() {
     : recursos
 
   return (
-    <PageWrapper title="Biblioteca" description="Videos educativos, podcasts, PDFs, infografías y guías de salud preventiva clasificadas por tema y tipo.">
+    <PageWrapper title="Biblioteca" description="Videos, podcasts, PDFs, infografías y guías sobre servicios públicos de salud en Ecuador: MSP, IESS, vacunación, salud mental y emergencias.">
       <SectionHero
         tag="Recursos educativos"
         title="Biblioteca de salud"

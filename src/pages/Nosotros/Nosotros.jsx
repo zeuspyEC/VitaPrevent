@@ -6,44 +6,44 @@ import './Nosotros.css'
 const EQUIPO = [
   {
     nombre: 'Erick Costa',
-    rol: 'Líder de proyecto & Desarrollador Full-Stack',
-    descripcion: 'Responsable de la arquitectura de la plataforma, la integración con Firebase y la coordinación del equipo de desarrollo.',
+    rol: 'Coordinador del proyecto · Evaluador de accesibilidad',
+    descripcion: 'Coordina el avance del proyecto, gestiona la arquitectura Firebase y lidera la evaluación de conformidad WCAG 2.2 AA con herramientas automáticas y pruebas manuales.',
     iniciales: 'EC',
     color: 'blue',
-    especialidades: ['React 19', 'Firebase', 'Accesibilidad Web', 'CI/CD'],
+    especialidades: ['Coordinación', 'WCAG 2.2 AA', 'React 19', 'Firebase'],
   },
   {
     nombre: 'Jonathan Tipán',
-    rol: 'Desarrollador Front-End & Diseño UX/UI',
-    descripcion: 'A cargo del sistema de diseño, la paleta de colores Ocean Breeze, la experiencia de usuario y los componentes accesibles.',
+    rol: 'Diseñador de interfaz · Desarrollador frontend',
+    descripcion: 'Define la estructura visual, jerarquía de navegación y experiencia de usuario. Implementa el sistema de diseño Ocean Breeze, los componentes interactivos y el CSS accesible.',
     iniciales: 'JT',
     color: 'teal',
-    especialidades: ['CSS Avanzado', 'WCAG 2.2', 'Design Tokens', 'UX Research'],
+    especialidades: ['Diseño UX/UI', 'CSS Accesible', 'Design Tokens', 'WAI-ARIA'],
   },
   {
     nombre: 'Javier Quilumba',
-    rol: 'Desarrollador Back-End & Gestión de Datos',
-    descripcion: 'Encargado de los servicios de Firestore, el panel de administración, la seguridad de datos y el modelo de información.',
+    rol: 'Desarrollador frontend · Redactor del informe',
+    descripcion: 'Implementa los servicios de Firestore, el panel de administración y los módulos de contenido. Documenta la metodología, resultados y evidencias en el informe técnico.',
     iniciales: 'JQ',
     color: 'purple',
-    especialidades: ['Firestore', 'Firebase Auth', 'Seguridad', 'Datos en salud'],
+    especialidades: ['Firestore', 'Panel admin', 'Informe técnico', 'ATAG'],
   },
 ]
 
 const VALORES = [
-  { icon: '🔬', title: 'Rigor científico', desc: 'Todo el contenido de VitaPrevent está basado en evidencia clínica y guías de organizaciones como la OMS, CDC y el MSP Ecuador.' },
-  { icon: '♿', title: 'Accesibilidad universal', desc: 'Cumplimos con WCAG 2.2 Nivel AA para garantizar que cualquier persona, independientemente de sus capacidades, pueda acceder a información de salud.' },
-  { icon: '🔒', title: 'Privacidad y ética', desc: 'Respetamos la privacidad de los usuarios. No vendemos datos ni generamos perfiles publicitarios. La salud es un derecho, no un producto.' },
-  { icon: '💡', title: 'Innovación tecnológica', desc: 'Usamos tecnologías modernas (React, Firebase, PWA) para ofrecer una experiencia rápida, confiable y disponible en cualquier dispositivo.' },
+  { icon: '🏛️', title: 'Información oficial del Estado', desc: 'Todo el contenido proviene de organismos públicos: MSP, IESS, ECU 911, OPS Ecuador y MINEDUC. Nada inventado, todo verificable y con fuente citada.' },
+  { icon: '♿', title: 'Accesibilidad universal', desc: 'Conformidad demostrada con WCAG 2.2 Nivel AA: navegación por teclado, lectores de pantalla, contraste, diseño responsive y control de animaciones. Ningún ciudadano queda fuera.' },
+  { icon: '🔒', title: 'Privacidad y servicio público', desc: 'Sin publicidad, sin rastreo, sin venta de datos. El sitio no usa cookies de seguimiento. La salud es un derecho, no un producto comercial.' },
+  { icon: '📱', title: 'Acceso sin barreras', desc: 'Funciona en cualquier dispositivo desde 320px. Carga rápida incluso con conexiones lentas, priorizando la conectividad de zonas rurales del Ecuador.' },
 ]
 
 export default function Nosotros() {
   return (
-    <PageWrapper title="Nosotros" description="Conoce al equipo detrás de VitaPrevent, nuestra misión, valores y el compromiso con la salud preventiva en Ecuador.">
+    <PageWrapper title="Nosotros" description="Equipo VitaPrevent — portal de servicios públicos de salud del Ecuador desarrollado en la EPN. Misión, roles y valores del proyecto.">
       <SectionHero
         tag="El equipo"
         title="Quiénes somos"
-        description="Somos un equipo de la Escuela Politécnica Nacional comprometido con democratizar el acceso a información de salud preventiva confiable y accesible para todos."
+        description="Somos estudiantes de la Escuela Politécnica Nacional que desarrollamos este portal para acercar a la ciudadanía ecuatoriana a los servicios públicos de salud del MSP, IESS y ECU 911."
         icon="👥"
         gradient="blue"
       />
@@ -56,19 +56,19 @@ export default function Nosotros() {
           <div className="mision-card mision-card--primary">
             <span className="mision-card__badge">Misión</span>
             <h2 id="mision-title" className="mision-card__title">Nuestra misión</h2>
-            <p>Proporcionar a la ciudadanía ecuatoriana información de salud preventiva basada en evidencia científica, presentada de manera accesible, comprensible y culturalmente pertinente, para empoderar a las personas en el cuidado de su bienestar y el de sus familias.</p>
+            <p>Centralizar y comunicar de forma accesible la información oficial sobre los servicios públicos de salud del Ecuador — MSP, IESS y ECU 911 — para que cualquier ciudadano, independientemente de su capacidad o dispositivo, pueda conocer y ejercer su derecho a la salud.</p>
           </div>
           <div className="mision-card">
             <span className="mision-card__badge">Visión</span>
             <h2 className="mision-card__title">Nuestra visión</h2>
-            <p>Ser la plataforma de referencia en salud preventiva del Ecuador, reconocida por su rigor científico, accesibilidad universal y compromiso con la equidad en salud.</p>
+            <p>Ser el portal de referencia en servicios públicos de salud del Ecuador, reconocido por la fiabilidad de sus fuentes oficiales, su plena conformidad con WCAG 2.2 Nivel AA y su compromiso con la equidad digital.</p>
           </div>
         </section>
 
         {/* Equipo */}
         <section aria-labelledby="equipo-title" className="equipo-section">
           <h2 id="equipo-title" className="nosotros-section-title">El equipo de desarrollo</h2>
-          <p className="equipo-intro">VitaPrevent es un proyecto académico desarrollado en la Escuela Politécnica Nacional (EPN) de Quito, Ecuador.</p>
+          <p className="equipo-intro">VitaPrevent es un proyecto académico desarrollado en la <strong>Escuela Politécnica Nacional (EPN)</strong> de Quito, Ecuador, para la asignatura <em>Usabilidad y Accesibilidad</em>. Cada integrante desempeña roles definidos según la metodología del proyecto.</p>
 
           <ul className="equipo-grid" role="list">
             {EQUIPO.map((m) => (
