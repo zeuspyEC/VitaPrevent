@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { NAV_ITEMS, ROUTES } from '@config/routes'
 import './Navbar.css'
@@ -8,6 +8,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const menuRef = useRef(null)
   const burgerRef = useRef(null)
+  const firstMenuItemRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -15,12 +16,31 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Cierra el menú con Escape
+  // Al abrir el menú: mueve foco al primer ítem (WCAG 2.4.3)
   useEffect(() => {
+    if (menuOpen) firstMenuItemRef.current?.focus()
+  }, [menuOpen])
+
+  // Cierra con Escape + focus trap dentro del menú móvil (WCAG 2.1.2)
+  useEffect(() => {
+    if (!menuOpen) return
     const onKey = (e) => {
-      if (e.key === 'Escape' && menuOpen) {
+      if (e.key === 'Escape') {
         setMenuOpen(false)
         burgerRef.current?.focus()
+        return
+      }
+      if (e.key !== 'Tab') return
+      const focusable = menuRef.current?.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      if (!focusable?.length) return
+      const first = focusable[0]
+      const last  = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus()
       }
     }
     document.addEventListener('keydown', onKey)
@@ -61,7 +81,6 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `navbar__link ${isActive ? 'navbar__link--active' : ''}`
                   }
-                  aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
                 >
                   {item.label}
                 </NavLink>
@@ -100,10 +119,11 @@ export default function Navbar() {
       >
         <nav aria-label="Navegación móvil">
           <ul role="list" className="navbar__mobile-list">
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map((item, idx) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
+                  ref={idx === 0 ? firstMenuItemRef : undefined}
                   className={({ isActive }) =>
                     `navbar__mobile-link ${isActive ? 'navbar__mobile-link--active' : ''}`
                   }
