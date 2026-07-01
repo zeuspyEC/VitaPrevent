@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PageWrapper from '@components/layout/PageWrapper/PageWrapper'
 import Breadcrumb from '@components/layout/Breadcrumb/Breadcrumb'
 import SectionHero from '@components/common/SectionHero/SectionHero'
@@ -30,6 +30,20 @@ export default function Biblioteca() {
   const [tipoActivo, setTipoActivo] = useState('todos')
   const [moduloActivo, setModuloActivo] = useState('todos')
   const [busqueda, setBusqueda] = useState('')
+  const tablistRef = useRef(null)
+
+  const onTabKeyDown = (e, idx) => {
+    const tabs = Array.from(tablistRef.current?.querySelectorAll('[role="tab"]') ?? [])
+    if (!tabs.length) return
+    let next = idx
+    if (e.key === 'ArrowRight') { e.preventDefault(); next = (idx + 1) % tabs.length }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); next = (idx - 1 + tabs.length) % tabs.length }
+    else if (e.key === 'Home') { e.preventDefault(); next = 0 }
+    else if (e.key === 'End') { e.preventDefault(); next = tabs.length - 1 }
+    else return
+    tabs[next].focus()
+    setTipoActivo(TIPOS[next].id)
+  }
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -63,13 +77,15 @@ export default function Biblioteca() {
             label="Buscar recursos en la biblioteca"
           />
 
-          <div className="biblioteca-tipo-tabs" role="tablist" aria-label="Filtrar por tipo de recurso">
-            {TIPOS.map((t) => (
+          <div className="biblioteca-tipo-tabs" role="tablist" aria-label="Filtrar por tipo de recurso" ref={tablistRef}>
+            {TIPOS.map((t, idx) => (
               <button
                 key={t.id}
                 role="tab"
                 aria-selected={tipoActivo === t.id}
+                tabIndex={tipoActivo === t.id ? 0 : -1}
                 onClick={() => setTipoActivo(t.id)}
+                onKeyDown={(e) => onTabKeyDown(e, idx)}
                 className={`tipo-tab ${tipoActivo === t.id ? 'tipo-tab--active' : ''}`}
               >
                 <span aria-hidden="true">{t.icon}</span>
